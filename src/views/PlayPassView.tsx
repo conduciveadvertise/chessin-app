@@ -6,7 +6,8 @@ import { ChessBoard } from "../components/ChessBoard";
 import { CapturedPieces } from "../components/CapturedPieces";
 import { MoveHistory } from "../components/MoveHistory";
 import { GameSettings } from "../types/chess";
-import { Users, RotateCcw, ChevronLeft, RefreshCw } from "lucide-react-native";
+import { Users, RotateCcw, ChevronLeft, RefreshCw, Crown } from "lucide-react-native";
+import { glassCard, glassCardSubtle, premiumShadow, GOLD, DARK } from "../lib/theme";
 
 interface PlayPassViewProps {
   settings: GameSettings;
@@ -34,7 +35,8 @@ export const PlayPassView: React.FC<PlayPassViewProps> = ({
 
         const capList: Array<{ type: any; color: any }> = [];
         chess.history({ verbose: true }).forEach((m) => {
-          if (m.captured) capList.push({ type: m.captured, color: m.color === "w" ? "b" : "w" });
+          if (m.captured)
+            capList.push({ type: m.captured, color: m.color === "w" ? "b" : "w" });
         });
         setCaptured(capList);
 
@@ -67,8 +69,11 @@ export const PlayPassView: React.FC<PlayPassViewProps> = ({
     soundManager.playGameStart();
   };
 
+  const currentTurn = chess.turn() === "w" ? "White" : "Black";
+
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.content}>
+      {/* Header */}
       <View style={styles.topHeader}>
         <Pressable onPress={onBackToHome} style={styles.exitBtn}>
           <ChevronLeft size={16} color="#E4E4E7" />
@@ -76,14 +81,38 @@ export const PlayPassView: React.FC<PlayPassViewProps> = ({
         </Pressable>
 
         <View style={styles.badge}>
-          <Users size={14} color="#D4AF37" />
+          <Users size={14} color={GOLD[300]} />
           <Text style={styles.badgeText}>Pass & Play</Text>
         </View>
+      </View>
+
+      {/* Turn Indicator */}
+      <View style={styles.turnIndicator}>
+        <View style={styles.turnIconBox}>
+          <Crown
+            size={16}
+            color={chess.turn() === "w" ? "#FFFFFF" : "#000000"}
+          />
+        </View>
+        <Text style={styles.turnText}>
+          {currentTurn}'s Turn
+        </Text>
+        <View
+          style={[
+            styles.turnDot,
+            {
+              backgroundColor:
+                chess.turn() === "w" ? "#FFFFFF" : "#18181B",
+              borderColor: GOLD[300],
+            },
+          ]}
+        />
       </View>
 
       <View style={styles.gameLayout}>
         <CapturedPieces captured={captured} pieceTheme={settings.pieceTheme} />
 
+        {/* Board */}
         <View style={styles.boardWrap}>
           <ChessBoard
             chess={chess}
@@ -96,8 +125,13 @@ export const PlayPassView: React.FC<PlayPassViewProps> = ({
           />
         </View>
 
+        {/* Controls */}
         <View style={styles.actionRow}>
-          <Pressable onPress={handleUndo} disabled={history.length === 0} style={styles.controlBtn}>
+          <Pressable
+            onPress={handleUndo}
+            disabled={history.length === 0}
+            style={styles.controlBtn}
+          >
             <RotateCcw size={14} color="#E4E4E7" />
             <Text style={styles.controlBtnText}>Undo</Text>
           </Pressable>
@@ -106,11 +140,11 @@ export const PlayPassView: React.FC<PlayPassViewProps> = ({
             onPress={() => setOrientation(orientation === "w" ? "b" : "w")}
             style={styles.controlBtn}
           >
-            <Text style={styles.controlBtnText}>Flip</Text>
+            <Text style={styles.controlBtnText}>Flip Board</Text>
           </Pressable>
 
           <Pressable onPress={handleReset} style={styles.resetBtn}>
-            <RefreshCw size={14} color="#D4AF37" />
+            <RefreshCw size={14} color={GOLD[300]} />
             <Text style={styles.resetBtnText}>New Game</Text>
           </Pressable>
         </View>
@@ -128,11 +162,11 @@ export const PlayPassView: React.FC<PlayPassViewProps> = ({
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#050505",
+    backgroundColor: DARK[800],
   },
   content: {
     padding: 16,
-    paddingBottom: 80,
+    paddingBottom: 100,
     gap: 16,
   },
   topHeader: {
@@ -141,16 +175,16 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     paddingBottom: 10,
     borderBottomWidth: 1,
-    borderBottomColor: "rgba(255,255,255,0.1)",
+    borderBottomColor: "rgba(212, 175, 55, 0.1)",
   },
   exitBtn: {
     flexDirection: "row",
     alignItems: "center",
     gap: 4,
-    backgroundColor: "rgba(255,255,255,0.05)",
+    ...glassCardSubtle,
+    borderRadius: 16,
     paddingHorizontal: 12,
     paddingVertical: 6,
-    borderRadius: 16,
   },
   exitBtnText: {
     color: "#E4E4E7",
@@ -161,18 +195,47 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     gap: 6,
-    backgroundColor: "rgba(212, 175, 55, 0.1)",
+    backgroundColor: "rgba(212, 175, 55, 0.08)",
     borderWidth: 1,
-    borderColor: "rgba(212, 175, 55, 0.3)",
+    borderColor: "rgba(212, 175, 55, 0.2)",
     paddingHorizontal: 10,
     paddingVertical: 4,
     borderRadius: 14,
   },
   badgeText: {
-    color: "#D4AF37",
+    color: GOLD[300],
     fontSize: 10,
     fontWeight: "bold",
   },
+  // ═══ Turn Indicator ═══
+  turnIndicator: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 10,
+    ...glassCard,
+    borderRadius: 16,
+    padding: 14,
+  },
+  turnIconBox: {
+    padding: 8,
+    borderRadius: 12,
+    backgroundColor: "rgba(212, 175, 55, 0.08)",
+    borderWidth: 1,
+    borderColor: "rgba(212, 175, 55, 0.2)",
+  },
+  turnText: {
+    color: "#FFF",
+    fontSize: 14,
+    fontWeight: "bold",
+    flex: 1,
+  },
+  turnDot: {
+    width: 16,
+    height: 16,
+    borderRadius: 8,
+    borderWidth: 2,
+  },
+  // ═══ Game Layout ═══
   gameLayout: {
     gap: 12,
   },
@@ -183,18 +246,20 @@ const styles = StyleSheet.create({
   actionRow: {
     flexDirection: "row",
     justifyContent: "space-between",
-    backgroundColor: "#0A0A0C",
-    padding: 12,
+    alignItems: "center",
+    gap: 8,
+    ...glassCard,
     borderRadius: 16,
+    padding: 12,
   },
   controlBtn: {
     flexDirection: "row",
     alignItems: "center",
-    gap: 4,
-    backgroundColor: "rgba(255,255,255,0.05)",
-    paddingHorizontal: 12,
-    paddingVertical: 8,
+    gap: 6,
+    ...glassCardSubtle,
     borderRadius: 12,
+    paddingHorizontal: 14,
+    paddingVertical: 10,
   },
   controlBtnText: {
     color: "#E4E4E7",
@@ -204,16 +269,16 @@ const styles = StyleSheet.create({
   resetBtn: {
     flexDirection: "row",
     alignItems: "center",
-    gap: 4,
-    backgroundColor: "rgba(212, 175, 55, 0.1)",
+    gap: 6,
+    backgroundColor: "rgba(212, 175, 55, 0.08)",
     borderWidth: 1,
-    borderColor: "rgba(212, 175, 55, 0.3)",
-    paddingHorizontal: 12,
-    paddingVertical: 8,
+    borderColor: "rgba(212, 175, 55, 0.2)",
+    paddingHorizontal: 14,
+    paddingVertical: 10,
     borderRadius: 12,
   },
   resetBtnText: {
-    color: "#D4AF37",
+    color: GOLD[300],
     fontSize: 11,
     fontWeight: "bold",
   },

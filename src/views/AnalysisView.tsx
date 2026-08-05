@@ -7,7 +7,8 @@ import { EvalBar } from "../components/EvalBar";
 import { MoveHistory } from "../components/MoveHistory";
 import { AiCoachPanel } from "../components/AiCoachPanel";
 import { GameSettings } from "../types/chess";
-import { BarChart3, ChevronLeft, Copy, Check, RefreshCw } from "lucide-react-native";
+import { BarChart3, ChevronLeft, Copy, Check, RefreshCw, Search } from "lucide-react-native";
+import { glassCard, glassCardSubtle, premiumShadow, GOLD, DARK } from "../lib/theme";
 
 interface AnalysisViewProps {
   settings: GameSettings;
@@ -61,8 +62,13 @@ export const AnalysisView: React.FC<AnalysisViewProps> = ({ settings, onBackToHo
     setEvalScore(0.0);
   };
 
+  const evalColor = evalScore > 0.5 ? "#34D399" : evalScore < -0.5 ? "#F87171" : "#A1A1AA";
+  const evalLabel =
+    evalScore > 0 ? `+${evalScore.toFixed(1)}` : evalScore.toFixed(1);
+
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.content}>
+      {/* Header */}
       <View style={styles.topHeader}>
         <Pressable onPress={onBackToHome} style={styles.exitBtn}>
           <ChevronLeft size={16} color="#E4E4E7" />
@@ -70,11 +76,33 @@ export const AnalysisView: React.FC<AnalysisViewProps> = ({ settings, onBackToHo
         </Pressable>
 
         <View style={styles.badge}>
-          <BarChart3 size={14} color="#D4AF37" />
+          <BarChart3 size={14} color={GOLD[300]} />
           <Text style={styles.badgeText}>Analysis Engine</Text>
         </View>
       </View>
 
+      {/* Eval Score Bar */}
+      <View style={styles.evalBar}>
+        <View style={styles.evalLabelBox}>
+          <Text style={[styles.evalValue, { color: evalColor }]}>
+            {evalLabel}
+          </Text>
+          <Text style={styles.evalLabelText}>EVAL</Text>
+        </View>
+        <View style={styles.evalMeter}>
+          <View
+            style={[
+              styles.evalMeterFill,
+              {
+                width: `${Math.max(5, Math.min(95, 50 + evalScore * 25))}%`,
+                backgroundColor: evalColor,
+              },
+            ]}
+          />
+        </View>
+      </View>
+
+      {/* Board */}
       <View style={styles.boardWrap}>
         {settings.showEvalBar && (
           <View style={{ height: 320 }}>
@@ -92,7 +120,7 @@ export const AnalysisView: React.FC<AnalysisViewProps> = ({ settings, onBackToHo
         />
       </View>
 
-      {/* FEN Control Form */}
+      {/* ═══ FEN Control ═══ */}
       <View style={styles.fenCard}>
         <Text style={styles.fenLabel}>FEN POSITION</Text>
         <View style={styles.fenRow}>
@@ -100,21 +128,24 @@ export const AnalysisView: React.FC<AnalysisViewProps> = ({ settings, onBackToHo
             value={fenInput}
             onChangeText={setFenInput}
             style={styles.fenInput}
-            placeholderTextColor="#71717A"
+            placeholderTextColor="#52525B"
           />
           <Pressable onPress={handleApplyFen} style={styles.loadBtn}>
             <Text style={styles.loadBtnText}>Load</Text>
           </Pressable>
           <Pressable onPress={handleReset} style={styles.resetBtn}>
-            <RefreshCw size={14} color="#D4AF37" />
+            <RefreshCw size={14} color={GOLD[300]} />
           </Pressable>
         </View>
       </View>
 
+      {/* Move History */}
       <MoveHistory
         history={history}
         onFlipBoard={() => setOrientation(orientation === "w" ? "b" : "w")}
       />
+
+      {/* AI Coach */}
       <AiCoachPanel
         fen={fen}
         lastMoveSan={history[history.length - 1]}
@@ -128,11 +159,11 @@ export const AnalysisView: React.FC<AnalysisViewProps> = ({ settings, onBackToHo
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#050505",
+    backgroundColor: DARK[800],
   },
   content: {
     padding: 16,
-    paddingBottom: 80,
+    paddingBottom: 100,
     gap: 16,
   },
   topHeader: {
@@ -141,16 +172,16 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     paddingBottom: 10,
     borderBottomWidth: 1,
-    borderBottomColor: "rgba(255,255,255,0.1)",
+    borderBottomColor: "rgba(212, 175, 55, 0.1)",
   },
   exitBtn: {
     flexDirection: "row",
     alignItems: "center",
     gap: 4,
-    backgroundColor: "rgba(255,255,255,0.05)",
+    ...glassCardSubtle,
+    borderRadius: 16,
     paddingHorizontal: 12,
     paddingVertical: 6,
-    borderRadius: 16,
   },
   exitBtnText: {
     color: "#E4E4E7",
@@ -161,36 +192,72 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     gap: 6,
-    backgroundColor: "rgba(212, 175, 55, 0.1)",
+    backgroundColor: "rgba(212, 175, 55, 0.08)",
     borderWidth: 1,
-    borderColor: "rgba(212, 175, 55, 0.3)",
+    borderColor: "rgba(212, 175, 55, 0.2)",
     paddingHorizontal: 10,
     paddingVertical: 4,
     borderRadius: 14,
   },
   badgeText: {
-    color: "#D4AF37",
+    color: GOLD[300],
     fontSize: 10,
     fontWeight: "bold",
   },
+  // ═══ Eval Bar ═══
+  evalBar: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 12,
+    ...glassCard,
+    borderRadius: 16,
+    padding: 14,
+  },
+  evalLabelBox: {
+    alignItems: "center",
+    minWidth: 50,
+  },
+  evalValue: {
+    fontSize: 18,
+    fontWeight: "bold",
+  },
+  evalLabelText: {
+    color: "#52525B",
+    fontSize: 8,
+    fontWeight: "bold",
+    letterSpacing: 1,
+    marginTop: 2,
+  },
+  evalMeter: {
+    flex: 1,
+    height: 8,
+    borderRadius: 4,
+    backgroundColor: "rgba(255,255,255,0.06)",
+    overflow: "hidden",
+  },
+  evalMeterFill: {
+    height: "100%",
+    borderRadius: 4,
+  },
+  // ═══ Board ═══
   boardWrap: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
     gap: 8,
   },
+  // ═══ FEN ═══
   fenCard: {
-    backgroundColor: "#0A0A0C",
-    borderRadius: 16,
-    borderWidth: 1,
-    borderColor: "rgba(212, 175, 55, 0.3)",
+    ...glassCard,
+    borderRadius: 18,
     padding: 14,
-    gap: 8,
+    gap: 10,
   },
   fenLabel: {
-    color: "#D4AF37",
+    color: GOLD[300],
     fontSize: 10,
     fontWeight: "bold",
+    letterSpacing: 1,
   },
   fenRow: {
     flexDirection: "row",
@@ -198,20 +265,19 @@ const styles = StyleSheet.create({
   },
   fenInput: {
     flex: 1,
-    backgroundColor: "rgba(255,255,255,0.05)",
-    borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.1)",
-    borderRadius: 10,
-    paddingHorizontal: 10,
-    paddingVertical: 6,
+    ...glassCardSubtle,
+    borderRadius: 12,
+    paddingHorizontal: 12,
+    paddingVertical: 10,
     color: "#FFF",
     fontSize: 11,
   },
   loadBtn: {
-    backgroundColor: "#D4AF37",
-    paddingHorizontal: 14,
-    borderRadius: 10,
+    backgroundColor: GOLD[300],
+    paddingHorizontal: 16,
+    borderRadius: 12,
     justifyContent: "center",
+    alignItems: "center",
   },
   loadBtnText: {
     color: "#000",
@@ -219,9 +285,12 @@ const styles = StyleSheet.create({
     fontSize: 11,
   },
   resetBtn: {
-    backgroundColor: "rgba(212, 175, 55, 0.1)",
+    backgroundColor: "rgba(212, 175, 55, 0.08)",
+    borderWidth: 1,
+    borderColor: "rgba(212, 175, 55, 0.2)",
     paddingHorizontal: 12,
-    borderRadius: 10,
+    borderRadius: 12,
     justifyContent: "center",
+    alignItems: "center",
   },
 });

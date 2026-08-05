@@ -5,7 +5,12 @@ import { soundManager } from "../services/sound";
 import { ChessBoard } from "../components/ChessBoard";
 import { GameSettings, UserProfile } from "../types/chess";
 import { learningRepository } from "../repositories/LearningRepository";
-import { LessonRecord, OpeningInfoExtended, MissionRecord, AchievementRecord } from "../types/learning";
+import {
+  LessonRecord,
+  OpeningInfoExtended,
+  MissionRecord,
+  AchievementRecord,
+} from "../types/learning";
 import {
   BookOpen,
   ChevronLeft,
@@ -14,7 +19,10 @@ import {
   Trophy,
   Zap,
   CheckCircle,
+  Crown,
+  Target,
 } from "lucide-react-native";
+import { glassCard, glassCardSubtle, premiumShadow, GOLD, DARK } from "../lib/theme";
 
 interface LearnViewProps {
   user?: UserProfile;
@@ -22,10 +30,16 @@ interface LearnViewProps {
   onBackToHome: () => void;
 }
 
-export const LearnView: React.FC<LearnViewProps> = ({ user, settings, onBackToHome }) => {
+export const LearnView: React.FC<LearnViewProps> = ({
+  user,
+  settings,
+  onBackToHome,
+}) => {
   const [activeTab, setActiveTab] = useState<"academy" | "explorer" | "missions">("academy");
 
-  const [selectedLevel, setSelectedLevel] = useState<"beginner" | "intermediate" | "advanced" | "grandmaster">("beginner");
+  const [selectedLevel, setSelectedLevel] = useState<
+    "beginner" | "intermediate" | "advanced" | "grandmaster"
+  >("beginner");
   const [lessons, setLessons] = useState<LessonRecord[]>([]);
   const [activeLessonIndex, setActiveLessonIndex] = useState<number>(0);
   const [chess] = useState<Chess>(() => new Chess());
@@ -84,7 +98,12 @@ export const LearnView: React.FC<LearnViewProps> = ({ user, settings, onBackToHo
             onPress={() => setActiveTab("academy")}
             style={[styles.tabBtn, activeTab === "academy" && styles.activeTabBtn]}
           >
-            <Text style={[styles.tabBtnText, activeTab === "academy" && styles.activeTabBtnText]}>
+            <Text
+              style={[
+                styles.tabBtnText,
+                activeTab === "academy" && styles.activeTabBtnText,
+              ]}
+            >
               Lessons
             </Text>
           </Pressable>
@@ -92,7 +111,12 @@ export const LearnView: React.FC<LearnViewProps> = ({ user, settings, onBackToHo
             onPress={() => setActiveTab("explorer")}
             style={[styles.tabBtn, activeTab === "explorer" && styles.activeTabBtn]}
           >
-            <Text style={[styles.tabBtnText, activeTab === "explorer" && styles.activeTabBtnText]}>
+            <Text
+              style={[
+                styles.tabBtnText,
+                activeTab === "explorer" && styles.activeTabBtnText,
+              ]}
+            >
               Openings
             </Text>
           </Pressable>
@@ -100,40 +124,66 @@ export const LearnView: React.FC<LearnViewProps> = ({ user, settings, onBackToHo
             onPress={() => setActiveTab("missions")}
             style={[styles.tabBtn, activeTab === "missions" && styles.activeTabBtn]}
           >
-            <Text style={[styles.tabBtnText, activeTab === "missions" && styles.activeTabBtnText]}>
+            <Text
+              style={[
+                styles.tabBtnText,
+                activeTab === "missions" && styles.activeTabBtnText,
+              ]}
+            >
               Missions
             </Text>
           </Pressable>
         </View>
       </View>
 
-      {/* ACADEMY LESSONS */}
+      {/* ═══ Academy Lessons ═══ */}
       {activeTab === "academy" && (
         <View style={styles.layout}>
           {/* Level selector */}
-          <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.levelScroll}>
-            {(["beginner", "intermediate", "advanced", "grandmaster"] as const).map((lvl) => (
-              <Pressable
-                key={lvl}
-                onPress={() => setSelectedLevel(lvl)}
-                style={[styles.levelChip, selectedLevel === lvl && styles.activeLevelChip]}
-              >
-                <Text style={[styles.levelText, selectedLevel === lvl && styles.activeLevelText]}>
-                  {lvl}
-                </Text>
-              </Pressable>
-            ))}
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            style={styles.levelScroll}
+          >
+            {(["beginner", "intermediate", "advanced", "grandmaster"] as const).map(
+              (lvl) => (
+                <Pressable
+                  key={lvl}
+                  onPress={() => setSelectedLevel(lvl)}
+                  style={[
+                    styles.levelChip,
+                    selectedLevel === lvl && styles.activeLevelChip,
+                  ]}
+                >
+                  <Text
+                    style={[
+                      styles.levelText,
+                      selectedLevel === lvl && styles.activeLevelText,
+                    ]}
+                  >
+                    {lvl}
+                  </Text>
+                </Pressable>
+              )
+            )}
           </ScrollView>
 
           {activeLesson && (
             <View style={styles.lessonCard}>
-              <Text style={styles.lessonTitle}>{activeLesson.title}</Text>
+              <View style={styles.lessonHeader}>
+                <View style={styles.lessonIconBox}>
+                  <BookOpen size={18} color={GOLD[300]} />
+                </View>
+                <Text style={styles.lessonTitle}>{activeLesson.title}</Text>
+              </View>
               <Text style={styles.lessonBody}>{activeLesson.explanation}</Text>
 
               {completedLesson && (
                 <View style={styles.successBox}>
                   <CheckCircle size={16} color="#34D399" />
-                  <Text style={styles.successText}>Lesson Completed! +{activeLesson.xpReward} XP</Text>
+                  <Text style={styles.successText}>
+                    Lesson Completed! +{activeLesson.xpReward} XP
+                  </Text>
                 </View>
               )}
             </View>
@@ -152,7 +202,7 @@ export const LearnView: React.FC<LearnViewProps> = ({ user, settings, onBackToHo
         </View>
       )}
 
-      {/* OPENING EXPLORER */}
+      {/* ═══ Opening Explorer ═══ */}
       {activeTab === "explorer" && (
         <View style={styles.layout}>
           {openings.map((op) => (
@@ -164,7 +214,12 @@ export const LearnView: React.FC<LearnViewProps> = ({ user, settings, onBackToHo
                 selectedOpening?.id === op.id && styles.activeOpeningCard,
               ]}
             >
-              <Text style={styles.openingEco}>{op.eco}</Text>
+              <View style={styles.openingHeader}>
+                <View style={styles.openingIconBox}>
+                  <Compass size={14} color={GOLD[300]} />
+                </View>
+                <Text style={styles.openingEco}>{op.eco}</Text>
+              </View>
               <Text style={styles.openingName}>{op.name}</Text>
               <Text style={styles.openingPgn}>{op.pgnMoves}</Text>
             </Pressable>
@@ -172,17 +227,29 @@ export const LearnView: React.FC<LearnViewProps> = ({ user, settings, onBackToHo
         </View>
       )}
 
-      {/* MISSIONS */}
+      {/* ═══ Missions ═══ */}
       {activeTab === "missions" && (
         <View style={styles.layout}>
-          <Text style={styles.sectionTitle}>Daily Missions</Text>
+          <View style={styles.missionHeaderRow}>
+            <View style={styles.missionIconBox}>
+              <Target size={18} color={GOLD[300]} />
+            </View>
+            <Text style={styles.sectionTitle}>Daily Missions</Text>
+          </View>
+
           {missions.map((m) => (
             <View key={m.id} style={styles.missionCard}>
+              <View style={styles.missionIconSmall}>
+                <Zap size={16} color={GOLD[300]} />
+              </View>
               <View style={{ flex: 1 }}>
                 <Text style={styles.missionTitle}>{m.title}</Text>
                 <Text style={styles.missionBody}>{m.description}</Text>
               </View>
-              <Text style={styles.missionXp}>+{m.xpReward} XP</Text>
+              <View style={styles.missionXpBox}>
+                <Text style={styles.missionXp}>+{m.xpReward}</Text>
+                <Text style={styles.missionXpLabel}>XP</Text>
+              </View>
             </View>
           ))}
         </View>
@@ -194,11 +261,11 @@ export const LearnView: React.FC<LearnViewProps> = ({ user, settings, onBackToHo
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#050505",
+    backgroundColor: DARK[800],
   },
   content: {
     padding: 16,
-    paddingBottom: 80,
+    paddingBottom: 100,
     gap: 16,
   },
   topHeader: {
@@ -207,16 +274,16 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     paddingBottom: 10,
     borderBottomWidth: 1,
-    borderBottomColor: "rgba(255,255,255,0.1)",
+    borderBottomColor: "rgba(212, 175, 55, 0.1)",
   },
   exitBtn: {
     flexDirection: "row",
     alignItems: "center",
     gap: 4,
-    backgroundColor: "rgba(255,255,255,0.05)",
+    ...glassCardSubtle,
+    borderRadius: 16,
     paddingHorizontal: 12,
     paddingVertical: 6,
-    borderRadius: 16,
   },
   exitBtnText: {
     color: "#E4E4E7",
@@ -225,20 +292,20 @@ const styles = StyleSheet.create({
   },
   tabToggle: {
     flexDirection: "row",
-    backgroundColor: "rgba(255,255,255,0.05)",
+    ...glassCardSubtle,
     borderRadius: 14,
-    padding: 2,
+    padding: 3,
   },
   tabBtn: {
-    paddingHorizontal: 10,
-    paddingVertical: 4,
+    paddingHorizontal: 12,
+    paddingVertical: 5,
     borderRadius: 12,
   },
   activeTabBtn: {
-    backgroundColor: "#D4AF37",
+    backgroundColor: GOLD[300],
   },
   tabBtnText: {
-    color: "#A1A1AA",
+    color: "#71717A",
     fontSize: 10,
     fontWeight: "bold",
   },
@@ -248,21 +315,24 @@ const styles = StyleSheet.create({
   layout: {
     gap: 12,
   },
+  // ═══ Academy ═══
   levelScroll: {
     marginBottom: 4,
   },
   levelChip: {
-    backgroundColor: "rgba(255,255,255,0.05)",
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 12,
+    ...glassCardSubtle,
+    borderRadius: 14,
+    paddingHorizontal: 14,
+    paddingVertical: 8,
     marginRight: 6,
   },
   activeLevelChip: {
-    backgroundColor: "#D4AF37",
+    backgroundColor: GOLD[300],
+    borderColor: GOLD[300],
+    borderWidth: 1.5,
   },
   levelText: {
-    color: "#A1A1AA",
+    color: "#71717A",
     fontSize: 10,
     fontWeight: "bold",
     textTransform: "capitalize",
@@ -271,27 +341,42 @@ const styles = StyleSheet.create({
     color: "#000",
   },
   lessonCard: {
-    backgroundColor: "#0A0A0C",
-    borderRadius: 16,
-    borderWidth: 1,
-    borderColor: "rgba(212, 175, 55, 0.3)",
+    ...glassCard,
+    borderRadius: 18,
     padding: 16,
-    gap: 6,
+    gap: 8,
+    ...premiumShadow,
+  },
+  lessonHeader: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 10,
+  },
+  lessonIconBox: {
+    padding: 10,
+    borderRadius: 14,
+    backgroundColor: "rgba(212, 175, 55, 0.08)",
+    borderWidth: 1,
+    borderColor: "rgba(212, 175, 55, 0.2)",
   },
   lessonTitle: {
-    color: "#D4AF37",
+    color: GOLD[300],
     fontSize: 16,
     fontWeight: "bold",
+    flex: 1,
   },
   lessonBody: {
     color: "#A1A1AA",
     fontSize: 12,
+    lineHeight: 18,
   },
   successBox: {
     flexDirection: "row",
     alignItems: "center",
     gap: 6,
-    backgroundColor: "rgba(6, 78, 59, 0.8)",
+    backgroundColor: "rgba(6, 78, 59, 0.5)",
+    borderWidth: 1,
+    borderColor: "rgba(52, 211, 153, 0.3)",
     padding: 10,
     borderRadius: 12,
     marginTop: 4,
@@ -305,22 +390,33 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
+  // ═══ Opening Explorer ═══
   openingCard: {
-    backgroundColor: "#0A0A0C",
-    borderRadius: 14,
-    borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.1)",
-    padding: 12,
-    gap: 4,
+    ...glassCardSubtle,
+    borderRadius: 16,
+    padding: 14,
+    gap: 6,
   },
   activeOpeningCard: {
-    borderColor: "#D4AF37",
-    backgroundColor: "rgba(212, 175, 55, 0.1)",
+    borderColor: GOLD[300],
+    backgroundColor: "rgba(212, 175, 55, 0.08)",
+    borderWidth: 1.5,
+  },
+  openingHeader: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
+  },
+  openingIconBox: {
+    padding: 8,
+    borderRadius: 10,
+    backgroundColor: "rgba(212, 175, 55, 0.08)",
   },
   openingEco: {
-    color: "#D4AF37",
+    color: GOLD[300],
     fontSize: 10,
     fontWeight: "bold",
+    letterSpacing: 1,
   },
   openingName: {
     color: "#FFF",
@@ -331,31 +427,67 @@ const styles = StyleSheet.create({
     color: "#71717A",
     fontSize: 11,
   },
+  // ═══ Missions ═══
+  missionHeaderRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 10,
+  },
+  missionIconBox: {
+    padding: 10,
+    borderRadius: 14,
+    backgroundColor: "rgba(212, 175, 55, 0.08)",
+    borderWidth: 1,
+    borderColor: "rgba(212, 175, 55, 0.2)",
+  },
   sectionTitle: {
-    color: "#D4AF37",
+    color: GOLD[300],
     fontSize: 16,
     fontWeight: "bold",
+    letterSpacing: 0.5,
   },
   missionCard: {
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: "space-between",
-    backgroundColor: "rgba(255,255,255,0.05)",
-    padding: 12,
-    borderRadius: 12,
+    gap: 12,
+    ...glassCardSubtle,
+    borderRadius: 16,
+    padding: 14,
+  },
+  missionIconSmall: {
+    padding: 10,
+    borderRadius: 14,
+    backgroundColor: "rgba(212, 175, 55, 0.08)",
+    borderWidth: 1,
+    borderColor: "rgba(212, 175, 55, 0.15)",
   },
   missionTitle: {
     color: "#FFF",
-    fontSize: 12,
+    fontSize: 13,
     fontWeight: "bold",
   },
   missionBody: {
-    color: "#A1A1AA",
+    color: "#71717A",
     fontSize: 10,
+    marginTop: 2,
+  },
+  missionXpBox: {
+    alignItems: "center",
+    backgroundColor: "rgba(212, 175, 55, 0.08)",
+    borderWidth: 1,
+    borderColor: "rgba(212, 175, 55, 0.15)",
+    paddingHorizontal: 10,
+    paddingVertical: 6,
+    borderRadius: 12,
   },
   missionXp: {
-    color: "#D4AF37",
-    fontSize: 11,
+    color: GOLD[300],
+    fontSize: 14,
+    fontWeight: "bold",
+  },
+  missionXpLabel: {
+    color: "#52525B",
+    fontSize: 8,
     fontWeight: "bold",
   },
 });
