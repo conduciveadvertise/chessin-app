@@ -33,7 +33,10 @@ import {
   Eye,
   Flag,
   ShieldAlert,
+  Zap,
+  Radio,
 } from "lucide-react-native";
+import { glassCard, glassCardSubtle, premiumShadow, GOLD, DARK } from "../lib/theme";
 
 interface PlayOnlineViewProps {
   user: UserProfile;
@@ -244,7 +247,12 @@ export const PlayOnlineView: React.FC<PlayOnlineViewProps> = ({
               onPress={() => setActiveTab("lobby")}
               style={[styles.tabBtn, activeTab === "lobby" && styles.activeTabBtn]}
             >
-              <Text style={[styles.tabBtnText, activeTab === "lobby" && styles.activeTabBtnText]}>
+              <Text
+                style={[
+                  styles.tabBtnText,
+                  activeTab === "lobby" && styles.activeTabBtnText,
+                ]}
+              >
                 Play Arena
               </Text>
             </Pressable>
@@ -252,7 +260,12 @@ export const PlayOnlineView: React.FC<PlayOnlineViewProps> = ({
               onPress={() => setActiveTab("spectate")}
               style={[styles.tabBtn, activeTab === "spectate" && styles.activeTabBtn]}
             >
-              <Text style={[styles.tabBtnText, activeTab === "spectate" && styles.activeTabBtnText]}>
+              <Text
+                style={[
+                  styles.tabBtnText,
+                  activeTab === "spectate" && styles.activeTabBtnText,
+                ]}
+              >
                 Spectate
               </Text>
             </Pressable>
@@ -262,9 +275,15 @@ export const PlayOnlineView: React.FC<PlayOnlineViewProps> = ({
 
       {!activeRoom ? (
         activeTab === "lobby" ? (
+          /* ═══ Lobby ═══ */
           <View style={styles.lobbyCard}>
-            <Text style={styles.title}>Online Multiplayer</Text>
-            <Text style={styles.sub}>Rated matchmaking & private invite rooms</Text>
+            <View style={styles.lobbyHeader}>
+              <View style={styles.lobbyIconBox}>
+                <Swords size={24} color={GOLD[300]} />
+              </View>
+              <Text style={styles.title}>Online Multiplayer</Text>
+              <Text style={styles.sub}>Rated matchmaking & private invite rooms</Text>
+            </View>
 
             {Boolean(errorMessage) && (
               <View style={styles.errorBox}>
@@ -285,10 +304,16 @@ export const PlayOnlineView: React.FC<PlayOnlineViewProps> = ({
                   <Pressable
                     key={tc.cat}
                     onPress={() => setTimeCategory(tc.cat as any)}
-                    style={[styles.tcBtn, timeCategory === tc.cat && styles.activeTcBtn]}
+                    style={[
+                      styles.tcBtn,
+                      timeCategory === tc.cat && styles.activeTcBtn,
+                    ]}
                   >
                     <Text
-                      style={[styles.tcBtnText, timeCategory === tc.cat && styles.activeTcBtnText]}
+                      style={[
+                        styles.tcBtnText,
+                        timeCategory === tc.cat && styles.activeTcBtnText,
+                      ]}
                     >
                       {tc.label}
                     </Text>
@@ -300,25 +325,42 @@ export const PlayOnlineView: React.FC<PlayOnlineViewProps> = ({
             {/* Matchmaking options */}
             <View style={styles.optionsRow}>
               <View style={styles.optionBox}>
-                <Swords size={24} color="#D4AF37" />
+                <View style={styles.optionIconBox}>
+                  <Swords size={24} color={GOLD[300]} />
+                </View>
                 <Text style={styles.optionTitle}>Quick Match</Text>
                 <Text style={styles.optionBody}>
                   Pair with players around {user.rating[timeCategory] || 1500} ELO.
                 </Text>
-                <Pressable onPress={handleQuickMatch} disabled={loading} style={styles.primaryBtn}>
+                <Pressable
+                  onPress={handleQuickMatch}
+                  disabled={loading}
+                  style={styles.primaryBtn}
+                >
                   {loading ? (
                     <ActivityIndicator size="small" color="#000" />
                   ) : (
-                    <Text style={styles.primaryBtnText}>Find Opponent</Text>
+                    <>
+                      <Zap size={14} color="#000" />
+                      <Text style={styles.primaryBtnText}>Find Opponent</Text>
+                    </>
                   )}
                 </Pressable>
               </View>
 
               <View style={styles.optionBox}>
-                <Users size={24} color="#D4AF37" />
+                <View style={styles.optionIconBox}>
+                  <Users size={24} color={GOLD[300]} />
+                </View>
                 <Text style={styles.optionTitle}>Challenge Friend</Text>
-                <Text style={styles.optionBody}>Generate a private 6-digit room code.</Text>
-                <Pressable onPress={handleCreateRoom} disabled={loading} style={styles.secondaryBtn}>
+                <Text style={styles.optionBody}>
+                  Generate a private 6-digit room code.
+                </Text>
+                <Pressable
+                  onPress={handleCreateRoom}
+                  disabled={loading}
+                  style={styles.secondaryBtn}
+                >
                   <Text style={styles.secondaryBtnText}>Create Code</Text>
                 </Pressable>
               </View>
@@ -332,19 +374,29 @@ export const PlayOnlineView: React.FC<PlayOnlineViewProps> = ({
                   value={roomCodeInput}
                   onChangeText={setRoomCodeInput}
                   placeholder="e.g. 849201"
-                  placeholderTextColor="#71717A"
+                  placeholderTextColor="#52525B"
                   style={styles.input}
                 />
-                <Pressable onPress={handleJoinRoom} disabled={loading} style={styles.joinBtn}>
+                <Pressable
+                  onPress={handleJoinRoom}
+                  disabled={loading}
+                  style={styles.joinBtn}
+                >
                   <Text style={styles.joinBtnText}>Join</Text>
                 </Pressable>
               </View>
             </View>
           </View>
         ) : (
+          /* ═══ Spectate ═══ */
           <View style={styles.lobbyCard}>
-            <Text style={styles.title}>Live Broadcasts</Text>
-            <Text style={styles.sub}>Watch top master games in real time</Text>
+            <View style={styles.lobbyHeader}>
+              <View style={styles.lobbyIconBox}>
+                <Radio size={24} color={GOLD[300]} />
+              </View>
+              <Text style={styles.title}>Live Broadcasts</Text>
+              <Text style={styles.sub}>Watch top master games in real time</Text>
+            </View>
 
             {[
               { title: "GM Praggnanandhaa vs GM Hikaru", eval: "+0.4", time: "3|0 Blitz" },
@@ -352,7 +404,10 @@ export const PlayOnlineView: React.FC<PlayOnlineViewProps> = ({
               { title: "IM Vidit Gujrathi vs GM Arjun Erigaisi", eval: "+1.1", time: "5|3 Blitz" },
             ].map((g, idx) => (
               <View key={idx} style={styles.broadcastCard}>
-                <View>
+                <View style={styles.broadcastIconBox}>
+                  <Eye size={16} color={GOLD[300]} />
+                </View>
+                <View style={{ flex: 1 }}>
                   <Text style={styles.broadcastTitle}>{g.title}</Text>
                   <Text style={styles.broadcastMeta}>
                     {g.time} • Eval {g.eval}
@@ -366,10 +421,13 @@ export const PlayOnlineView: React.FC<PlayOnlineViewProps> = ({
           </View>
         )
       ) : (
-        /* Active Game Arena */
+        /* ═══ Active Game ═══ */
         <View style={styles.gameLayout}>
           {activeRoom.status === "waiting" && (
             <View style={styles.waitingCard}>
+              <View style={styles.waitingIconBox}>
+                <Users size={20} color={GOLD[300]} />
+              </View>
               <Text style={styles.waitingTitle}>Waiting for opponent...</Text>
               <Text style={styles.waitingCode}>{activeRoom.code}</Text>
             </View>
@@ -440,11 +498,11 @@ export const PlayOnlineView: React.FC<PlayOnlineViewProps> = ({
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#050505",
+    backgroundColor: DARK[800],
   },
   content: {
     padding: 16,
-    paddingBottom: 80,
+    paddingBottom: 100,
     gap: 16,
   },
   topHeader: {
@@ -453,16 +511,16 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     paddingBottom: 10,
     borderBottomWidth: 1,
-    borderBottomColor: "rgba(255,255,255,0.1)",
+    borderBottomColor: "rgba(212, 175, 55, 0.1)",
   },
   exitBtn: {
     flexDirection: "row",
     alignItems: "center",
     gap: 4,
-    backgroundColor: "rgba(255,255,255,0.05)",
+    ...glassCardSubtle,
+    borderRadius: 16,
     paddingHorizontal: 12,
     paddingVertical: 6,
-    borderRadius: 16,
   },
   exitBtnText: {
     color: "#E4E4E7",
@@ -471,47 +529,61 @@ const styles = StyleSheet.create({
   },
   tabToggle: {
     flexDirection: "row",
-    backgroundColor: "rgba(255,255,255,0.05)",
+    ...glassCardSubtle,
     borderRadius: 14,
-    padding: 2,
+    padding: 3,
   },
   tabBtn: {
-    paddingHorizontal: 10,
-    paddingVertical: 4,
+    paddingHorizontal: 12,
+    paddingVertical: 5,
     borderRadius: 12,
   },
   activeTabBtn: {
-    backgroundColor: "#D4AF37",
+    backgroundColor: GOLD[300],
   },
   tabBtnText: {
-    color: "#A1A1AA",
+    color: "#71717A",
     fontSize: 10,
     fontWeight: "bold",
   },
   activeTabBtnText: {
     color: "#000",
   },
+  // ═══ Lobby ═══
   lobbyCard: {
-    backgroundColor: "#0A0A0C",
+    ...glassCard,
     borderRadius: 24,
-    borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.1)",
     padding: 20,
     gap: 16,
+    ...premiumShadow,
+  },
+  lobbyHeader: {
+    alignItems: "center",
+    gap: 6,
+  },
+  lobbyIconBox: {
+    padding: 14,
+    borderRadius: 20,
+    backgroundColor: "rgba(212, 175, 55, 0.08)",
+    borderWidth: 1,
+    borderColor: "rgba(212, 175, 55, 0.2)",
   },
   title: {
-    color: "#D4AF37",
+    color: GOLD[300],
     fontSize: 22,
     fontWeight: "bold",
     textAlign: "center",
+    letterSpacing: 0.5,
   },
   sub: {
-    color: "#A1A1AA",
+    color: "#71717A",
     fontSize: 12,
     textAlign: "center",
   },
   errorBox: {
-    backgroundColor: "rgba(159, 18, 57, 0.8)",
+    backgroundColor: "rgba(159, 18, 57, 0.5)",
+    borderWidth: 1,
+    borderColor: "rgba(244, 63, 94, 0.3)",
     padding: 10,
     borderRadius: 12,
   },
@@ -519,11 +591,13 @@ const styles = StyleSheet.create({
     color: "#FDA4AF",
     fontSize: 11,
     textAlign: "center",
+    fontWeight: "600",
   },
   label: {
-    color: "#D4AF37",
+    color: GOLD[300],
     fontSize: 10,
     fontWeight: "bold",
+    letterSpacing: 1,
     marginBottom: 8,
   },
   tcGrid: {
@@ -532,36 +606,40 @@ const styles = StyleSheet.create({
   },
   tcBtn: {
     flex: 1,
-    backgroundColor: "rgba(255,255,255,0.05)",
-    borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.1)",
-    paddingVertical: 10,
+    ...glassCardSubtle,
     borderRadius: 12,
+    paddingVertical: 12,
     alignItems: "center",
   },
   activeTcBtn: {
-    backgroundColor: "rgba(212, 175, 55, 0.2)",
-    borderColor: "#D4AF37",
+    backgroundColor: "rgba(212, 175, 55, 0.12)",
+    borderColor: GOLD[300],
+    borderWidth: 1.5,
   },
   tcBtnText: {
-    color: "#A1A1AA",
+    color: "#71717A",
     fontSize: 10,
     fontWeight: "bold",
   },
   activeTcBtnText: {
-    color: "#D4AF37",
+    color: GOLD[300],
   },
   optionsRow: {
     gap: 12,
   },
   optionBox: {
-    backgroundColor: "rgba(255,255,255,0.05)",
-    borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.1)",
-    borderRadius: 16,
-    padding: 16,
+    ...glassCardSubtle,
+    borderRadius: 18,
+    padding: 18,
     alignItems: "center",
     gap: 8,
+  },
+  optionIconBox: {
+    padding: 12,
+    borderRadius: 18,
+    backgroundColor: "rgba(212, 175, 55, 0.08)",
+    borderWidth: 1,
+    borderColor: "rgba(212, 175, 55, 0.15)",
   },
   optionTitle: {
     color: "#FFFFFF",
@@ -569,17 +647,22 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
   optionBody: {
-    color: "#A1A1AA",
+    color: "#71717A",
     fontSize: 11,
     textAlign: "center",
+    lineHeight: 16,
   },
   primaryBtn: {
-    backgroundColor: "#D4AF37",
-    paddingVertical: 10,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 6,
+    backgroundColor: GOLD[300],
+    paddingVertical: 12,
     paddingHorizontal: 20,
     borderRadius: 14,
     width: "100%",
-    alignItems: "center",
+    ...premiumShadow,
   },
   primaryBtnText: {
     color: "#000",
@@ -587,17 +670,17 @@ const styles = StyleSheet.create({
     fontSize: 12,
   },
   secondaryBtn: {
-    backgroundColor: "rgba(212, 175, 55, 0.1)",
+    backgroundColor: "rgba(212, 175, 55, 0.08)",
     borderWidth: 1,
-    borderColor: "rgba(212, 175, 55, 0.3)",
-    paddingVertical: 10,
+    borderColor: "rgba(212, 175, 55, 0.2)",
+    paddingVertical: 12,
     paddingHorizontal: 20,
     borderRadius: 14,
     width: "100%",
     alignItems: "center",
   },
   secondaryBtnText: {
-    color: "#D4AF37",
+    color: GOLD[300],
     fontWeight: "bold",
     fontSize: 12,
   },
@@ -610,17 +693,15 @@ const styles = StyleSheet.create({
   },
   input: {
     flex: 1,
-    backgroundColor: "rgba(255,255,255,0.05)",
-    borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.1)",
+    ...glassCardSubtle,
     borderRadius: 12,
     paddingHorizontal: 12,
-    paddingVertical: 10,
+    paddingVertical: 12,
     color: "#FFF",
     fontSize: 12,
   },
   joinBtn: {
-    backgroundColor: "#D4AF37",
+    backgroundColor: GOLD[300],
     paddingHorizontal: 20,
     borderRadius: 12,
     justifyContent: "center",
@@ -630,14 +711,22 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     fontSize: 12,
   },
+  // ═══ Broadcast ═══
   broadcastCard: {
     flexDirection: "row",
-    justifyContent: "space-between",
     alignItems: "center",
-    backgroundColor: "rgba(255,255,255,0.05)",
-    padding: 12,
-    borderRadius: 14,
+    gap: 10,
+    ...glassCardSubtle,
+    borderRadius: 16,
+    padding: 14,
     marginVertical: 4,
+  },
+  broadcastIconBox: {
+    padding: 10,
+    borderRadius: 14,
+    backgroundColor: "rgba(212, 175, 55, 0.08)",
+    borderWidth: 1,
+    borderColor: "rgba(212, 175, 55, 0.15)",
   },
   broadcastTitle: {
     color: "#FFF",
@@ -645,42 +734,53 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
   broadcastMeta: {
-    color: "#A1A1AA",
+    color: "#71717A",
     fontSize: 10,
+    marginTop: 2,
   },
   watchBtn: {
-    backgroundColor: "rgba(212, 175, 55, 0.2)",
-    paddingHorizontal: 12,
-    paddingVertical: 6,
+    backgroundColor: "rgba(212, 175, 55, 0.12)",
+    borderWidth: 1,
+    borderColor: "rgba(212, 175, 55, 0.2)",
+    paddingHorizontal: 14,
+    paddingVertical: 8,
     borderRadius: 12,
   },
   watchBtnText: {
-    color: "#D4AF37",
+    color: GOLD[300],
     fontSize: 10,
     fontWeight: "bold",
   },
+  // ═══ Active Game ═══
   gameLayout: {
     gap: 12,
   },
   waitingCard: {
-    backgroundColor: "rgba(212, 175, 55, 0.1)",
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 12,
+    backgroundColor: "rgba(212, 175, 55, 0.08)",
     borderWidth: 1,
-    borderColor: "rgba(212, 175, 55, 0.3)",
+    borderColor: "rgba(212, 175, 55, 0.2)",
     padding: 16,
     borderRadius: 16,
-    alignItems: "center",
+  },
+  waitingIconBox: {
+    padding: 10,
+    borderRadius: 14,
+    backgroundColor: "rgba(212, 175, 55, 0.1)",
   },
   waitingTitle: {
-    color: "#D4AF37",
+    color: GOLD[300],
     fontSize: 12,
     fontWeight: "bold",
   },
   waitingCode: {
     color: "#FFF",
-    fontSize: 22,
+    fontSize: 20,
     fontWeight: "bold",
     letterSpacing: 2,
-    marginTop: 4,
+    marginLeft: "auto",
   },
   boardWrap: {
     alignItems: "center",
@@ -694,9 +794,11 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     gap: 4,
-    backgroundColor: "rgba(159, 18, 57, 0.8)",
-    paddingHorizontal: 12,
-    paddingVertical: 6,
+    backgroundColor: "rgba(159, 18, 57, 0.6)",
+    borderWidth: 1,
+    borderColor: "rgba(244, 63, 94, 0.3)",
+    paddingHorizontal: 14,
+    paddingVertical: 8,
     borderRadius: 12,
   },
   resignBtnText: {

@@ -27,7 +27,11 @@ import {
   Bookmark,
   Check,
   Copy,
+  Clock as ClockIcon,
+  Crown,
+  Zap,
 } from "lucide-react-native";
+import { glassCard, glassCardSubtle, premiumShadow, GOLD, DARK } from "../lib/theme";
 
 interface PlayVsAiViewProps {
   user: UserProfile;
@@ -115,7 +119,7 @@ export const PlayVsAiView: React.FC<PlayVsAiViewProps> = ({
         </Pressable>
 
         <View style={styles.levelBadge}>
-          <Bot size={14} color="#D4AF37" />
+          <Bot size={14} color={GOLD[300]} />
           <Text style={styles.levelBadgeText}>
             Stockfish 17 (Lvl {aiLevel} / ~{StockfishEngine.getLevelConfig(aiLevel).elo} ELO)
           </Text>
@@ -123,12 +127,17 @@ export const PlayVsAiView: React.FC<PlayVsAiViewProps> = ({
       </View>
 
       {!isGameStarted ? (
-        /* Setup Screen */
+        /* ═══ Setup Screen ═══ */
         <View style={styles.setupCard}>
-          <Text style={styles.setupTitle}>Stockfish 17 Arena</Text>
-          <Text style={styles.setupSub}>Configure match parameters</Text>
+          <View style={styles.setupHeader}>
+            <View style={styles.setupIconBox}>
+              <Bot size={28} color={GOLD[300]} />
+            </View>
+            <Text style={styles.setupTitle}>Stockfish 17 Arena</Text>
+            <Text style={styles.setupSub}>Configure match parameters</Text>
+          </View>
 
-          {/* Level selector buttons */}
+          {/* Level selector */}
           <View>
             <Text style={styles.label}>
               ENGINE LEVEL: {selectedLevel} (~
@@ -139,10 +148,16 @@ export const PlayVsAiView: React.FC<PlayVsAiViewProps> = ({
                 <Pressable
                   key={lvl}
                   onPress={() => setSelectedLevel(lvl)}
-                  style={[styles.levelBtn, selectedLevel === lvl && styles.activeLevelBtn]}
+                  style={[
+                    styles.levelBtn,
+                    selectedLevel === lvl && styles.activeLevelBtn,
+                  ]}
                 >
                   <Text
-                    style={[styles.levelBtnText, selectedLevel === lvl && styles.activeLevelBtnText]}
+                    style={[
+                      styles.levelBtnText,
+                      selectedLevel === lvl && styles.activeLevelBtnText,
+                    ]}
                   >
                     Lvl {lvl}
                   </Text>
@@ -157,18 +172,42 @@ export const PlayVsAiView: React.FC<PlayVsAiViewProps> = ({
             <View style={styles.grid2}>
               <Pressable
                 onPress={() => setSelectedColor("w")}
-                style={[styles.optionBtn, selectedColor === "w" && styles.activeOptionBtn]}
+                style={[
+                  styles.optionBtn,
+                  selectedColor === "w" && styles.activeOptionBtn,
+                ]}
               >
-                <Text style={[styles.optionText, selectedColor === "w" && styles.activeOptionText]}>
+                <Crown
+                  size={14}
+                  color={selectedColor === "w" ? GOLD[300] : "#71717A"}
+                />
+                <Text
+                  style={[
+                    styles.optionText,
+                    selectedColor === "w" && styles.activeOptionText,
+                  ]}
+                >
                   White
                 </Text>
               </Pressable>
 
               <Pressable
                 onPress={() => setSelectedColor("b")}
-                style={[styles.optionBtn, selectedColor === "b" && styles.activeOptionBtn]}
+                style={[
+                  styles.optionBtn,
+                  selectedColor === "b" && styles.activeOptionBtn,
+                ]}
               >
-                <Text style={[styles.optionText, selectedColor === "b" && styles.activeOptionText]}>
+                <Crown
+                  size={14}
+                  color={selectedColor === "b" ? GOLD[300] : "#71717A"}
+                />
+                <Text
+                  style={[
+                    styles.optionText,
+                    selectedColor === "b" && styles.activeOptionText,
+                  ]}
+                >
                   Black
                 </Text>
               </Pressable>
@@ -187,9 +226,21 @@ export const PlayVsAiView: React.FC<PlayVsAiViewProps> = ({
                 <Pressable
                   key={tc.val}
                   onPress={() => setSelectedTimeSec(tc.val)}
-                  style={[styles.optionBtn, selectedTimeSec === tc.val && styles.activeOptionBtn]}
+                  style={[
+                    styles.optionBtn,
+                    selectedTimeSec === tc.val && styles.activeOptionBtn,
+                  ]}
                 >
-                  <Text style={[styles.optionText, selectedTimeSec === tc.val && styles.activeOptionText]}>
+                  <ClockIcon
+                    size={12}
+                    color={selectedTimeSec === tc.val ? GOLD[300] : "#71717A"}
+                  />
+                  <Text
+                    style={[
+                      styles.optionText,
+                      selectedTimeSec === tc.val && styles.activeOptionText,
+                    ]}
+                  >
                     {tc.label}
                   </Text>
                 </Pressable>
@@ -198,11 +249,12 @@ export const PlayVsAiView: React.FC<PlayVsAiViewProps> = ({
           </View>
 
           <Pressable onPress={handleStartGame} style={styles.startBtn}>
+            <Zap size={16} color="#000" />
             <Text style={styles.startBtnText}>Start Match</Text>
           </Pressable>
         </View>
       ) : (
-        /* Active Game Layout */
+        /* ═══ Active Game Layout ═══ */
         <View style={styles.gameLayout}>
           {/* Opening info */}
           <View style={styles.openingRow}>
@@ -211,12 +263,14 @@ export const PlayVsAiView: React.FC<PlayVsAiViewProps> = ({
             </Text>
             <View style={styles.openingActions}>
               <Pressable onPress={requestHint} style={styles.hintBtn}>
-                <Lightbulb size={12} color="#D4AF37" />
+                <Lightbulb size={12} color={GOLD[300]} />
                 <Text style={styles.hintBtnText}>Hint</Text>
               </Pressable>
               <Pressable onPress={handleSaveGame} style={styles.saveBtn}>
                 <Bookmark size={12} color="#E4E4E7" />
-                <Text style={styles.saveBtnText}>{isSaved ? "Saved" : "Save"}</Text>
+                <Text style={styles.saveBtnText}>
+                  {isSaved ? "Saved" : "Save"}
+                </Text>
               </Pressable>
             </View>
           </View>
@@ -258,7 +312,10 @@ export const PlayVsAiView: React.FC<PlayVsAiViewProps> = ({
               disabled={isGameOver}
               lastMove={
                 history.length > 0
-                  ? { from: history[history.length - 1].from, to: history[history.length - 1].to }
+                  ? {
+                      from: history[history.length - 1].from,
+                      to: history[history.length - 1].to,
+                    }
                   : null
               }
             />
@@ -279,7 +336,11 @@ export const PlayVsAiView: React.FC<PlayVsAiViewProps> = ({
           {/* Controls */}
           <View style={styles.actionRow}>
             <View style={{ flexDirection: "row", gap: 6 }}>
-              <Pressable onPress={undoMove} disabled={history.length === 0} style={styles.controlBtn}>
+              <Pressable
+                onPress={undoMove}
+                disabled={history.length === 0}
+                style={styles.controlBtn}
+              >
                 <RotateCcw size={14} color="#E4E4E7" />
                 <Text style={styles.controlBtnText}>Undo</Text>
               </Pressable>
@@ -289,12 +350,19 @@ export const PlayVsAiView: React.FC<PlayVsAiViewProps> = ({
             </View>
 
             <View style={{ flexDirection: "row", gap: 6 }}>
-              <Pressable onPress={() => resign(playerColor)} disabled={isGameOver} style={styles.resignBtn}>
+              <Pressable
+                onPress={() => resign(playerColor)}
+                disabled={isGameOver}
+                style={styles.resignBtn}
+              >
                 <Flag size={14} color="#FDA4AF" />
                 <Text style={styles.resignBtnText}>Resign</Text>
               </Pressable>
               {isGameOver && (
-                <Pressable onPress={() => setShowAnalysisModal(true)} style={styles.analysisBtn}>
+                <Pressable
+                  onPress={() => setShowAnalysisModal(true)}
+                  style={styles.analysisBtn}
+                >
                   <BarChart3 size={14} color="#000" />
                   <Text style={styles.analysisBtnText}>Analysis</Text>
                 </Pressable>
@@ -303,13 +371,25 @@ export const PlayVsAiView: React.FC<PlayVsAiViewProps> = ({
           </View>
 
           {/* History & Coach */}
-          <MoveHistory history={history.map((m) => m.san)} onUndo={undoMove} onFlipBoard={flipBoard} />
+          <MoveHistory
+            history={history.map((m) => m.san)}
+            onUndo={undoMove}
+            onFlipBoard={flipBoard}
+          />
           <AiCoachPanel
             fen={fen}
             lastMoveSan={history.length > 0 ? history[history.length - 1].san : ""}
             pgn={exportPgn()}
             evalScore={evalScore}
-            difficulty={aiLevel >= 15 ? "grandmaster" : aiLevel >= 10 ? "hard" : aiLevel >= 5 ? "medium" : "easy"}
+            difficulty={
+              aiLevel >= 15
+                ? "grandmaster"
+                : aiLevel >= 10
+                ? "hard"
+                : aiLevel >= 5
+                ? "medium"
+                : "easy"
+            }
           />
         </View>
       )}
@@ -318,7 +398,9 @@ export const PlayVsAiView: React.FC<PlayVsAiViewProps> = ({
         <GameAnalysisModal
           pgn={exportPgn()}
           resultText={
-            winner === "draw" ? "Game Drawn" : `${winner === "w" ? "White" : "Black"} Won by ${winReason}`
+            winner === "draw"
+              ? "Game Drawn"
+              : `${winner === "w" ? "White" : "Black"} Won by ${winReason}`
           }
           movesCount={history.length}
           playerColor={playerColor === "w" ? "White" : "Black"}
@@ -333,11 +415,11 @@ export const PlayVsAiView: React.FC<PlayVsAiViewProps> = ({
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#050505",
+    backgroundColor: DARK[800],
   },
   content: {
     padding: 16,
-    paddingBottom: 80,
+    paddingBottom: 100,
     gap: 16,
   },
   topHeader: {
@@ -346,16 +428,16 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     paddingBottom: 10,
     borderBottomWidth: 1,
-    borderBottomColor: "rgba(255,255,255,0.1)",
+    borderBottomColor: "rgba(212, 175, 55, 0.1)",
   },
   exitBtn: {
     flexDirection: "row",
     alignItems: "center",
     gap: 4,
-    backgroundColor: "rgba(255,255,255,0.05)",
+    ...glassCardSubtle,
+    borderRadius: 16,
     paddingHorizontal: 12,
     paddingVertical: 6,
-    borderRadius: 16,
   },
   exitBtnText: {
     color: "#E4E4E7",
@@ -366,31 +448,43 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     gap: 6,
-    backgroundColor: "rgba(212, 175, 55, 0.1)",
+    backgroundColor: "rgba(212, 175, 55, 0.08)",
     borderWidth: 1,
-    borderColor: "rgba(212, 175, 55, 0.3)",
+    borderColor: "rgba(212, 175, 55, 0.2)",
     paddingHorizontal: 10,
     paddingVertical: 4,
     borderRadius: 14,
   },
   levelBadgeText: {
-    color: "#D4AF37",
+    color: GOLD[300],
     fontSize: 10,
     fontWeight: "bold",
   },
+  // ═══ Setup Card ═══
   setupCard: {
-    backgroundColor: "#0A0A0C",
+    ...glassCard,
     borderRadius: 24,
+    padding: 24,
+    gap: 18,
+    ...premiumShadow,
+  },
+  setupHeader: {
+    alignItems: "center",
+    gap: 8,
+  },
+  setupIconBox: {
+    padding: 16,
+    borderRadius: 24,
+    backgroundColor: "rgba(212, 175, 55, 0.08)",
     borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.1)",
-    padding: 20,
-    gap: 16,
+    borderColor: "rgba(212, 175, 55, 0.2)",
   },
   setupTitle: {
-    color: "#D4AF37",
+    color: GOLD[300],
     fontSize: 22,
     fontWeight: "bold",
     textAlign: "center",
+    letterSpacing: 0.5,
   },
   setupSub: {
     color: "#A1A1AA",
@@ -398,9 +492,10 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   label: {
-    color: "#D4AF37",
+    color: GOLD[300],
     fontSize: 10,
     fontWeight: "bold",
+    letterSpacing: 1,
     marginBottom: 8,
   },
   levelRow: {
@@ -410,19 +505,18 @@ const styles = StyleSheet.create({
   },
   levelBtn: {
     flex: 1,
-    backgroundColor: "rgba(255,255,255,0.05)",
-    borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.1)",
-    paddingVertical: 10,
-    borderRadius: 10,
+    ...glassCardSubtle,
+    borderRadius: 12,
+    paddingVertical: 12,
     alignItems: "center",
   },
   activeLevelBtn: {
-    backgroundColor: "#D4AF37",
-    borderColor: "#D4AF37",
+    backgroundColor: GOLD[300],
+    borderColor: GOLD[300],
+    borderWidth: 1.5,
   },
   levelBtnText: {
-    color: "#A1A1AA",
+    color: "#71717A",
     fontSize: 10,
     fontWeight: "bold",
   },
@@ -439,38 +533,45 @@ const styles = StyleSheet.create({
   },
   optionBtn: {
     flex: 1,
-    backgroundColor: "rgba(255,255,255,0.05)",
-    borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.1)",
-    paddingVertical: 12,
-    borderRadius: 12,
+    flexDirection: "row",
     alignItems: "center",
+    justifyContent: "center",
+    gap: 6,
+    ...glassCardSubtle,
+    borderRadius: 14,
+    paddingVertical: 14,
   },
   activeOptionBtn: {
-    backgroundColor: "rgba(212, 175, 55, 0.2)",
-    borderColor: "#D4AF37",
+    backgroundColor: "rgba(212, 175, 55, 0.12)",
+    borderColor: GOLD[300],
+    borderWidth: 1.5,
   },
   optionText: {
-    color: "#A1A1AA",
+    color: "#71717A",
     fontSize: 11,
     fontWeight: "bold",
   },
   activeOptionText: {
-    color: "#D4AF37",
+    color: GOLD[300],
   },
   startBtn: {
-    backgroundColor: "#D4AF37",
-    paddingVertical: 14,
-    borderRadius: 24,
+    flexDirection: "row",
     alignItems: "center",
+    justifyContent: "center",
+    gap: 8,
+    backgroundColor: GOLD[300],
+    paddingVertical: 16,
+    borderRadius: 24,
     marginTop: 8,
+    ...premiumShadow,
   },
   startBtnText: {
     color: "#000",
-    fontSize: 13,
+    fontSize: 14,
     fontWeight: "bold",
     letterSpacing: 1,
   },
+  // ═══ Game Layout ═══
   gameLayout: {
     gap: 12,
   },
@@ -478,14 +579,15 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    backgroundColor: "#0A0A0C",
-    padding: 10,
-    borderRadius: 12,
+    ...glassCardSubtle,
+    borderRadius: 14,
+    padding: 12,
   },
   openingText: {
-    color: "#D4AF37",
+    color: GOLD[300],
     fontSize: 11,
     fontWeight: "bold",
+    flex: 1,
   },
   openingActions: {
     flexDirection: "row",
@@ -495,13 +597,15 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     gap: 4,
-    backgroundColor: "rgba(212, 175, 55, 0.2)",
-    paddingHorizontal: 8,
-    paddingVertical: 4,
+    backgroundColor: "rgba(212, 175, 55, 0.12)",
+    borderWidth: 1,
+    borderColor: "rgba(212, 175, 55, 0.2)",
+    paddingHorizontal: 10,
+    paddingVertical: 5,
     borderRadius: 12,
   },
   hintBtnText: {
-    color: "#D4AF37",
+    color: GOLD[300],
     fontSize: 10,
     fontWeight: "bold",
   },
@@ -509,14 +613,17 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     gap: 4,
-    backgroundColor: "rgba(255,255,255,0.1)",
-    paddingHorizontal: 8,
-    paddingVertical: 4,
+    backgroundColor: "rgba(255,255,255,0.04)",
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.06)",
+    paddingHorizontal: 10,
+    paddingVertical: 5,
     borderRadius: 12,
   },
   saveBtnText: {
     color: "#E4E4E7",
     fontSize: 10,
+    fontWeight: "600",
   },
   boardWrap: {
     flexDirection: "row",
@@ -528,18 +635,18 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    backgroundColor: "#0A0A0C",
-    padding: 12,
+    ...glassCard,
     borderRadius: 16,
+    padding: 12,
   },
   controlBtn: {
     flexDirection: "row",
     alignItems: "center",
     gap: 4,
-    backgroundColor: "rgba(255,255,255,0.05)",
-    paddingHorizontal: 10,
-    paddingVertical: 6,
+    ...glassCardSubtle,
     borderRadius: 12,
+    paddingHorizontal: 12,
+    paddingVertical: 8,
   },
   controlBtnText: {
     color: "#E4E4E7",
@@ -550,9 +657,11 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     gap: 4,
-    backgroundColor: "rgba(159, 18, 57, 0.8)",
-    paddingHorizontal: 10,
-    paddingVertical: 6,
+    backgroundColor: "rgba(159, 18, 57, 0.6)",
+    borderWidth: 1,
+    borderColor: "rgba(244, 63, 94, 0.3)",
+    paddingHorizontal: 12,
+    paddingVertical: 8,
     borderRadius: 12,
   },
   resignBtnText: {
@@ -564,10 +673,11 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     gap: 4,
-    backgroundColor: "#D4AF37",
-    paddingHorizontal: 10,
-    paddingVertical: 6,
+    backgroundColor: GOLD[300],
+    paddingHorizontal: 12,
+    paddingVertical: 8,
     borderRadius: 12,
+    ...premiumShadow,
   },
   analysisBtnText: {
     color: "#000",

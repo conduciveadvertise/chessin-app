@@ -15,7 +15,10 @@ import {
   RotateCcw,
   CheckCircle2,
   Filter,
+  Crown,
+  Target,
 } from "lucide-react-native";
+import { glassCard, glassCardSubtle, premiumShadow, GOLD, DARK } from "../lib/theme";
 
 interface PuzzlesViewProps {
   user?: UserProfile;
@@ -119,7 +122,12 @@ export const PuzzlesView: React.FC<PuzzlesViewProps> = ({
             onPress={() => setActiveTab("daily")}
             style={[styles.tabBtn, activeTab === "daily" && styles.activeTabBtn]}
           >
-            <Text style={[styles.tabBtnText, activeTab === "daily" && styles.activeTabBtnText]}>
+            <Text
+              style={[
+                styles.tabBtnText,
+                activeTab === "daily" && styles.activeTabBtnText,
+              ]}
+            >
               Daily
             </Text>
           </Pressable>
@@ -127,38 +135,39 @@ export const PuzzlesView: React.FC<PuzzlesViewProps> = ({
             onPress={() => setActiveTab("tactics")}
             style={[styles.tabBtn, activeTab === "tactics" && styles.activeTabBtn]}
           >
-            <Text style={[styles.tabBtnText, activeTab === "tactics" && styles.activeTabBtnText]}>
+            <Text
+              style={[
+                styles.tabBtnText,
+                activeTab === "tactics" && styles.activeTabBtnText,
+              ]}
+            >
               Themes
             </Text>
           </Pressable>
         </View>
 
         <View style={styles.streakBadge}>
-          <Flame size={12} color="#D4AF37" />
+          <Flame size={12} color={GOLD[300]} />
           <Text style={styles.streakText}>{dailyStreak}d</Text>
         </View>
       </View>
 
-      {/* Daily Puzzle */}
+      {/* ═══ Daily Puzzle ═══ */}
       {activeTab === "daily" && dailyPuzzle && (
         <View style={styles.puzzleLayout}>
-          <View style={styles.boardWrap}>
-            <ChessBoard
-              chess={chess}
-              boardTheme={settings.boardTheme}
-              pieceTheme={settings.pieceTheme}
-              orientation={dailyPuzzle.theme === "back_rank" ? "b" : "w"}
-              highlightLegalMoves={settings.highlightLegalMoves}
-              onMove={handleMove}
-              disabled={solved}
-            />
-          </View>
-
-          <View style={styles.infoCard}>
-            <Text style={styles.puzzleTitle}>{dailyPuzzle.description}</Text>
-            <Text style={styles.puzzleMeta}>
-              Rating: {dailyPuzzle.rating} • Theme: {dailyPuzzle.theme.toUpperCase()}
-            </Text>
+          {/* Puzzle Info Card */}
+          <View style={styles.puzzleInfoCard}>
+            <View style={styles.puzzleInfoTopRow}>
+              <View style={styles.puzzleIconBox}>
+                <Crown size={18} color={GOLD[300]} />
+              </View>
+              <View style={{ flex: 1 }}>
+                <Text style={styles.puzzleTitle}>{dailyPuzzle.description}</Text>
+                <Text style={styles.puzzleMeta}>
+                  Rating: {dailyPuzzle.rating} • Theme: {dailyPuzzle.theme.toUpperCase()}
+                </Text>
+              </View>
+            </View>
 
             {failed && (
               <View style={styles.errorBox}>
@@ -185,7 +194,7 @@ export const PuzzlesView: React.FC<PuzzlesViewProps> = ({
             <View style={styles.actionRow}>
               {!solved && (
                 <Pressable onPress={() => setShowHint(true)} style={styles.hintBtn}>
-                  <Lightbulb size={14} color="#D4AF37" />
+                  <Lightbulb size={14} color={GOLD[300]} />
                   <Text style={styles.hintBtnText}>Hint</Text>
                 </Pressable>
               )}
@@ -195,20 +204,45 @@ export const PuzzlesView: React.FC<PuzzlesViewProps> = ({
               </Pressable>
             </View>
           </View>
+
+          {/* Board */}
+          <View style={styles.boardWrap}>
+            <ChessBoard
+              chess={chess}
+              boardTheme={settings.boardTheme}
+              pieceTheme={settings.pieceTheme}
+              orientation={dailyPuzzle.theme === "back_rank" ? "b" : "w"}
+              highlightLegalMoves={settings.highlightLegalMoves}
+              onMove={handleMove}
+              disabled={solved}
+            />
+          </View>
         </View>
       )}
 
-      {/* Tactics Themes */}
+      {/* ═══ Tactics Themes ═══ */}
       {activeTab === "tactics" && (
         <View style={styles.tacticsLayout}>
-          <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.themeScroll}>
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            style={styles.themeScroll}
+          >
             {["mate_in_1", "mate_in_2", "fork", "pin", "skewer", "endgame"].map((t) => (
               <Pressable
                 key={t}
                 onPress={() => setSelectedTheme(t as PuzzleTheme)}
-                style={[styles.themeChip, selectedTheme === t && styles.activeThemeChip]}
+                style={[
+                  styles.themeChip,
+                  selectedTheme === t && styles.activeThemeChip,
+                ]}
               >
-                <Text style={[styles.themeText, selectedTheme === t && styles.activeThemeText]}>
+                <Text
+                  style={[
+                    styles.themeText,
+                    selectedTheme === t && styles.activeThemeText,
+                  ]}
+                >
                   {t.replace(/_/g, " ")}
                 </Text>
               </Pressable>
@@ -242,11 +276,11 @@ export const PuzzlesView: React.FC<PuzzlesViewProps> = ({
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#050505",
+    backgroundColor: DARK[800],
   },
   content: {
     padding: 16,
-    paddingBottom: 80,
+    paddingBottom: 100,
     gap: 16,
   },
   topHeader: {
@@ -255,16 +289,16 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     paddingBottom: 10,
     borderBottomWidth: 1,
-    borderBottomColor: "rgba(255,255,255,0.1)",
+    borderBottomColor: "rgba(212, 175, 55, 0.1)",
   },
   exitBtn: {
     flexDirection: "row",
     alignItems: "center",
     gap: 4,
-    backgroundColor: "rgba(255,255,255,0.05)",
+    ...glassCardSubtle,
+    borderRadius: 16,
     paddingHorizontal: 12,
     paddingVertical: 6,
-    borderRadius: 16,
   },
   exitBtnText: {
     color: "#E4E4E7",
@@ -273,20 +307,20 @@ const styles = StyleSheet.create({
   },
   tabToggle: {
     flexDirection: "row",
-    backgroundColor: "rgba(255,255,255,0.05)",
+    ...glassCardSubtle,
     borderRadius: 14,
-    padding: 2,
+    padding: 3,
   },
   tabBtn: {
-    paddingHorizontal: 10,
-    paddingVertical: 4,
+    paddingHorizontal: 12,
+    paddingVertical: 5,
     borderRadius: 12,
   },
   activeTabBtn: {
-    backgroundColor: "#D4AF37",
+    backgroundColor: GOLD[300],
   },
   tabBtnText: {
-    color: "#A1A1AA",
+    color: "#71717A",
     fontSize: 10,
     fontWeight: "bold",
   },
@@ -297,42 +331,55 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     gap: 4,
-    backgroundColor: "rgba(212, 175, 55, 0.1)",
+    backgroundColor: "rgba(212, 175, 55, 0.08)",
+    borderWidth: 1,
+    borderColor: "rgba(212, 175, 55, 0.2)",
     paddingHorizontal: 8,
     paddingVertical: 4,
     borderRadius: 12,
   },
   streakText: {
-    color: "#D4AF37",
+    color: GOLD[300],
     fontSize: 10,
     fontWeight: "bold",
   },
+  // ═══ Daily Puzzle ═══
   puzzleLayout: {
     gap: 16,
   },
-  boardWrap: {
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  infoCard: {
-    backgroundColor: "#0A0A0C",
+  puzzleInfoCard: {
+    ...glassCard,
     borderRadius: 20,
-    borderWidth: 1,
-    borderColor: "rgba(212, 175, 55, 0.3)",
     padding: 16,
-    gap: 8,
+    gap: 10,
+    ...premiumShadow,
+  },
+  puzzleInfoTopRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 12,
+  },
+  puzzleIconBox: {
+    padding: 12,
+    borderRadius: 16,
+    backgroundColor: "rgba(212, 175, 55, 0.08)",
+    borderWidth: 1,
+    borderColor: "rgba(212, 175, 55, 0.2)",
   },
   puzzleTitle: {
-    color: "#D4AF37",
-    fontSize: 18,
+    color: GOLD[300],
+    fontSize: 16,
     fontWeight: "bold",
   },
   puzzleMeta: {
-    color: "#A1A1AA",
-    fontSize: 11,
+    color: "#71717A",
+    fontSize: 10,
+    marginTop: 2,
   },
   errorBox: {
-    backgroundColor: "rgba(159, 18, 57, 0.8)",
+    backgroundColor: "rgba(159, 18, 57, 0.5)",
+    borderWidth: 1,
+    borderColor: "rgba(244, 63, 94, 0.3)",
     padding: 10,
     borderRadius: 12,
   },
@@ -340,13 +387,16 @@ const styles = StyleSheet.create({
     color: "#FDA4AF",
     fontSize: 11,
     textAlign: "center",
+    fontWeight: "600",
   },
   successBox: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
     gap: 8,
-    backgroundColor: "rgba(6, 78, 59, 0.8)",
+    backgroundColor: "rgba(6, 78, 59, 0.5)",
+    borderWidth: 1,
+    borderColor: "rgba(52, 211, 153, 0.3)",
     padding: 12,
     borderRadius: 12,
   },
@@ -359,7 +409,9 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     gap: 8,
-    backgroundColor: "rgba(245, 158, 11, 0.1)",
+    backgroundColor: "rgba(245, 158, 11, 0.08)",
+    borderWidth: 1,
+    borderColor: "rgba(245, 158, 11, 0.2)",
     padding: 10,
     borderRadius: 12,
   },
@@ -379,12 +431,14 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     gap: 6,
-    backgroundColor: "rgba(212, 175, 55, 0.15)",
-    paddingVertical: 10,
-    borderRadius: 12,
+    backgroundColor: "rgba(212, 175, 55, 0.12)",
+    borderWidth: 1,
+    borderColor: "rgba(212, 175, 55, 0.2)",
+    paddingVertical: 12,
+    borderRadius: 14,
   },
   hintBtnText: {
-    color: "#D4AF37",
+    color: GOLD[300],
     fontSize: 11,
     fontWeight: "bold",
   },
@@ -394,15 +448,20 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     gap: 6,
-    backgroundColor: "rgba(255,255,255,0.05)",
-    paddingVertical: 10,
-    borderRadius: 12,
+    ...glassCardSubtle,
+    borderRadius: 14,
+    paddingVertical: 12,
   },
   retryBtnText: {
     color: "#E4E4E7",
     fontSize: 11,
     fontWeight: "bold",
   },
+  boardWrap: {
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  // ═══ Tactics ═══
   tacticsLayout: {
     gap: 16,
   },
@@ -410,19 +469,22 @@ const styles = StyleSheet.create({
     marginBottom: 4,
   },
   themeChip: {
-    backgroundColor: "rgba(255,255,255,0.05)",
-    paddingHorizontal: 12,
-    paddingVertical: 6,
+    ...glassCardSubtle,
     borderRadius: 14,
+    paddingHorizontal: 14,
+    paddingVertical: 8,
     marginRight: 8,
   },
   activeThemeChip: {
-    backgroundColor: "#D4AF37",
+    backgroundColor: GOLD[300],
+    borderColor: GOLD[300],
+    borderWidth: 1.5,
   },
   themeText: {
-    color: "#A1A1AA",
+    color: "#71717A",
     fontSize: 11,
     fontWeight: "bold",
+    textTransform: "capitalize",
   },
   activeThemeText: {
     color: "#000",
