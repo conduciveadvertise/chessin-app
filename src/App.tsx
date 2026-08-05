@@ -11,7 +11,6 @@ import { LearnView } from "./views/LearnView";
 import { LeaderboardView } from "./views/LeaderboardView";
 import { ProfileView } from "./views/ProfileView";
 import { TournamentView } from "./views/TournamentView";
-import { AdminView } from "./views/AdminView";
 import { SettingsModal } from "./views/SettingsModal";
 import { AuthModal } from "./components/AuthModal";
 import { SocialHubModal } from "./components/SocialHubModal";
@@ -66,9 +65,8 @@ export default function App() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <StatusBar barStyle="light-content" backgroundColor="#050505" />
+      <StatusBar barStyle="light-content" backgroundColor="#050507" />
 
-      {/* Header Navbar */}
       <Navbar
         currentMode={currentMode}
         onSelectMode={(mode) => setCurrentMode(mode)}
@@ -80,97 +78,54 @@ export default function App() {
         isAuthenticated={authState.isAuthenticated}
       />
 
-      {/* Main Screen Body */}
       <View style={styles.main}>
         {currentMode === "home" && (
-          <HomeView
-            onSelectMode={(mode) => setCurrentMode(mode)}
-            user={activeUser}
-          />
+          <HomeView onSelectMode={(mode) => setCurrentMode(mode)} user={activeUser} />
         )}
 
         {currentMode === "vs_ai" && (
-          <PlayVsAiView
-            user={activeUser}
-            settings={settings}
-            onBackToHome={() => setCurrentMode("home")}
-          />
+          <PlayVsAiView user={activeUser} settings={settings} onBackToHome={() => setCurrentMode("home")} />
         )}
 
         {currentMode === "online" && (
-          <PlayOnlineView
-            user={activeUser}
-            settings={settings}
-            onBackToHome={() => setCurrentMode("home")}
-          />
+          <PlayOnlineView user={activeUser} settings={settings} onBackToHome={() => setCurrentMode("home")} />
         )}
 
         {currentMode === "pass_and_play" && (
-          <PlayPassView
-            settings={settings}
-            onBackToHome={() => setCurrentMode("home")}
-          />
+          <PlayPassView settings={settings} onBackToHome={() => setCurrentMode("home")} />
         )}
 
         {currentMode === "puzzle" && (
-          <PuzzlesView
-            settings={settings}
-            onBackToHome={() => setCurrentMode("home")}
-            onSolvePuzzle={handleSolvePuzzle}
-          />
+          <PuzzlesView settings={settings} onBackToHome={() => setCurrentMode("home")} onSolvePuzzle={handleSolvePuzzle} />
         )}
 
         {currentMode === "analysis" && (
-          <AnalysisView
-            settings={settings}
-            onBackToHome={() => setCurrentMode("home")}
-          />
+          <AnalysisView settings={settings} onBackToHome={() => setCurrentMode("home")} />
         )}
 
         {currentMode === "learn" && (
-          <LearnView
-            settings={settings}
-            onBackToHome={() => setCurrentMode("home")}
-          />
+          <LearnView settings={settings} onBackToHome={() => setCurrentMode("home")} />
         )}
 
         {currentMode === "leaderboard" && (
-          <LeaderboardView
-            onBackToHome={() => setCurrentMode("home")}
-          />
+          <LeaderboardView onBackToHome={() => setCurrentMode("home")} />
         )}
 
         {currentMode === "profile" && (
-          <ProfileView
-            user={activeUser}
-            onBackToHome={() => setCurrentMode("home")}
-            onOpenAuth={() => setIsAuthOpen(true)}
-          />
+          <ProfileView user={activeUser} onBackToHome={() => setCurrentMode("home")} onOpenAuth={() => setIsAuthOpen(true)} />
         )}
 
         {currentMode === "tournaments" && (
-          <TournamentView
-            user={activeUser}
-            settings={settings}
-            onBackToHome={() => setCurrentMode("home")}
-          />
-        )}
-
-        {currentMode === "admin" && (
-          <AdminView
-            onBackToHome={() => setCurrentMode("home")}
-          />
+          <TournamentView user={activeUser} settings={settings} onBackToHome={() => setCurrentMode("home")} />
         )}
       </View>
 
-      {/* Ticker Footer */}
       <View style={styles.ticker}>
         <Text style={styles.tickerText}>
           LIVE: GUKESH D. VS DING LIREN • CHESS.IN CIRCUIT 2026
         </Text>
       </View>
 
-      {/* Modals */}
       {isSettingsOpen && (
         <SettingsModal
           settings={settings}
@@ -179,17 +134,12 @@ export default function App() {
         />
       )}
 
-      <AuthModal
-        isOpen={isAuthOpen}
-        onClose={() => setIsAuthOpen(false)}
-      />
+      <AuthModal isOpen={isAuthOpen} onClose={() => setIsAuthOpen(false)} />
 
       <SocialHubModal
         isOpen={isSocialOpen}
         onClose={() => setIsSocialOpen(false)}
-        onLaunchMatch={() => {
-          setCurrentMode("online");
-        }}
+        onLaunchMatch={() => setCurrentMode("online")}
       />
     </SafeAreaView>
   );
@@ -198,7 +148,7 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#050505",
+    backgroundColor: "#050507",
   },
   main: {
     flex: 1,
@@ -208,6 +158,9 @@ const styles = StyleSheet.create({
     paddingVertical: 6,
     paddingHorizontal: 12,
     alignItems: "center",
+  marginHorizontal: 16,
+    borderRadius: 12,
+    marginBottom: 4,
   },
   tickerText: {
     color: "#000",
