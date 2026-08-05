@@ -9,6 +9,10 @@ on:
 jobs:
   build-android:
     runs-on: ubuntu-latest
+    
+    # 1. Secret ko Job-level environment variable mein map karein
+    env:
+      EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
 
     steps:
       - name: Checkout repository
@@ -42,14 +46,14 @@ jobs:
             echo '{"cli":{"version":">= 5.9.0"},"build":{"preview":{"android":{"buildType":"apk"},"distribution":"internal"},"production":{"android":{"buildType":"apk"}}},"submit":{"production":{}}}' > eas.json
           fi
 
+      # 2. 'secrets' ki jagah 'env' context ka use karein
       - name: Build Android APK with EAS
-        if: ${{ secrets.EXPO_TOKEN != '' }}
+        if: env.EXPO_TOKEN != ''
         run: eas build --platform android --profile preview --non-interactive --no-wait
-        env:
-          EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
 
+      # 3. Yahan bhi 'env' context ka use karein
       - name: Skip EAS build (no EXPO_TOKEN)
-        if: ${{ secrets.EXPO_TOKEN == '' }}
+        if: env.EXPO_TOKEN == ''
         run: |
           echo "EXPO_TOKEN secret is not set. Skipping EAS build step."
           echo "To enable EAS builds, add the EXPO_TOKEN secret in repository settings."
