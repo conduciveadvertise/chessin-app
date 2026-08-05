@@ -1,0 +1,6 @@
+{
+  "name": "Chess.IN",
+  "description": "India's premium luxury chess application featuring FIDE chess rules, Stockfish AI engine, AI Coach powered by Gemini, Daily Puzzles, Online & Friend Matchmaking, Leaderboards, and analysis mode.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

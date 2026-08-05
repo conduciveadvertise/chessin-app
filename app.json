@@ -1,0 +1,39 @@
+{
+  "expo": {
+    "name": "Chess.IN",
+    "slug": "chessin",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "scheme": "chessin",
+    "userInterfaceStyle": "dark",
+    "jsEngine": "jsc",
+    "newArchEnabled": false,
+    "splash": {
+      "image": "./assets/splash-icon.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#0D0E15"
+    },
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.chessin.app",
+      "jsEngine": "jsc"
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#0D0E15"
+      },
+      "package": "com.chessin.app",
+      "jsEngine": "jsc"
+    },
+    "web": {
+      "bundler": "metro",
+      "output": "single",
+      "favicon": "./assets/favicon.png"
+    },
+    "plugins": [
+      "expo-secure-store"
+    ]
+  }
+}
