@@ -10,35 +10,39 @@ import {
   Users,
   Sparkles,
   ArrowRight,
-  Shield,
   BarChart3,
+  Zap,
+  Target,
 } from "lucide-react-native";
 import { GameMode, UserProfile } from "../types/chess";
+import { glassCard, glassCardSubtle, premiumShadow, GOLD, DARK } from "../lib/theme";
 
 interface HomeViewProps {
-  onSelectMode: (mode: GameMode | "leaderboard" | "profile" | "tournaments" | "admin") => void;
+  onSelectMode: (mode: GameMode | "leaderboard" | "profile" | "tournaments") => void;
   user: UserProfile;
 }
 
 export const HomeView: React.FC<HomeViewProps> = ({ onSelectMode, user }) => {
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.content}>
-      {/* Hero Banner */}
+      {/* ═══ Hero Banner ═══ */}
       <View style={styles.heroCard}>
+        <View style={styles.heroGlow} />
         <View style={styles.circuitBadge}>
-          <Crown size={12} color="#D4AF37" />
-          <Text style={styles.circuitBadgeText}>EDITORIAL CIRCUIT • INDIA'S PREMIER ARENA</Text>
+          <Crown size={12} color={GOLD[300]} />
+          <Text style={styles.circuitBadgeText}>
+            EDITORIAL CIRCUIT • INDIA'S PREMIER ARENA
+          </Text>
         </View>
 
         <Text style={styles.heroTitle}>The Grandmaster</Text>
         <Text style={styles.heroTitleSub}>Invitational & Arena</Text>
 
         <Text style={styles.heroBody}>
-          Experience ultra-responsive grandmaster chess with FIDE rules, Stockfish 16 AI, Gemini
-          Coach, and real-time multiplayer.
+          Experience ultra-responsive grandmaster chess with FIDE rules, Stockfish 17
+          AI, Gemini Coach, and real-time multiplayer.
         </Text>
 
-        {/* CTA Buttons */}
         <View style={styles.ctaRow}>
           <Pressable onPress={() => onSelectMode("vs_ai")} style={styles.primaryCta}>
             <Bot size={16} color="#000" />
@@ -47,26 +51,54 @@ export const HomeView: React.FC<HomeViewProps> = ({ onSelectMode, user }) => {
           </Pressable>
 
           <Pressable onPress={() => onSelectMode("online")} style={styles.secondaryCta}>
-            <Swords size={16} color="#D4AF37" />
+            <Swords size={16} color={GOLD[300]} />
             <Text style={styles.secondaryCtaText}>Online Arena</Text>
           </Pressable>
         </View>
       </View>
 
-      {/* Featured Modes Section */}
+      {/* ═══ Stats Strip ═══ */}
+      <View style={styles.statsStrip}>
+        <View style={styles.statItem}>
+          <Text style={styles.statValue}>{user.rating.rapid}</Text>
+          <Text style={styles.statLabel}>Rapid ELO</Text>
+        </View>
+        <View style={styles.statDivider} />
+        <View style={styles.statItem}>
+          <Text style={styles.statValue}>{user.winCount}</Text>
+          <Text style={styles.statLabel}>Wins</Text>
+        </View>
+        <View style={styles.statDivider} />
+        <View style={styles.statItem}>
+          <Text style={styles.statValue}>{user.dailyStreak}</Text>
+          <Text style={styles.statLabel}>Day Streak</Text>
+        </View>
+        <View style={styles.statDivider} />
+        <View style={styles.statItem}>
+          <Text style={styles.statValue}>{user.rating.puzzle}</Text>
+          <Text style={styles.statLabel}>Puzzle</Text>
+        </View>
+      </View>
+
+      {/* ═══ Featured Modes ═══ */}
       <View style={styles.sectionHeader}>
         <View style={styles.sectionTitleRow}>
-          <Sparkles size={18} color="#D4AF37" />
+          <Sparkles size={18} color={GOLD[300]} />
           <Text style={styles.sectionTitle}>Featured Modes</Text>
         </View>
         <Text style={styles.sectionMeta}>CHESS.IN v2.4 PRO</Text>
       </View>
 
       <View style={styles.grid}>
-        {/* Play vs AI */}
+        {/* vs AI */}
         <Pressable onPress={() => onSelectMode("vs_ai")} style={styles.featureCard}>
-          <View style={styles.iconBox}>
-            <Bot size={22} color="#D4AF37" />
+          <View style={styles.featureTopRow}>
+            <View style={styles.iconBoxGold}>
+              <Bot size={22} color={GOLD[300]} />
+            </View>
+            <View style={styles.featureBadge}>
+              <Text style={styles.featureBadgeText}>AI</Text>
+            </View>
           </View>
           <Text style={styles.cardTitle}>Stockfish Engine</Text>
           <Text style={styles.cardBody}>
@@ -74,14 +106,19 @@ export const HomeView: React.FC<HomeViewProps> = ({ onSelectMode, user }) => {
           </Text>
           <View style={styles.cardFooter}>
             <Text style={styles.cardFooterText}>PLAY AI</Text>
-            <ArrowRight size={12} color="#D4AF37" />
+            <ArrowRight size={12} color={GOLD[300]} />
           </View>
         </Pressable>
 
-        {/* Online Multiplayer */}
+        {/* Online */}
         <Pressable onPress={() => onSelectMode("online")} style={styles.featureCard}>
-          <View style={styles.iconBox}>
-            <Swords size={22} color="#D4AF37" />
+          <View style={styles.featureTopRow}>
+            <View style={styles.iconBoxGold}>
+              <Swords size={22} color={GOLD[300]} />
+            </View>
+            <View style={[styles.featureBadge, styles.featureBadgeLive]}>
+              <Text style={styles.featureBadgeText}>LIVE</Text>
+            </View>
           </View>
           <Text style={styles.cardTitle}>Online Multiplayer</Text>
           <Text style={styles.cardBody}>
@@ -89,14 +126,19 @@ export const HomeView: React.FC<HomeViewProps> = ({ onSelectMode, user }) => {
           </Text>
           <View style={styles.cardFooter}>
             <Text style={styles.cardFooterText}>JOIN LOBBY</Text>
-            <ArrowRight size={12} color="#D4AF37" />
+            <ArrowRight size={12} color={GOLD[300]} />
           </View>
         </Pressable>
 
-        {/* Daily Puzzle */}
+        {/* Puzzle */}
         <Pressable onPress={() => onSelectMode("puzzle")} style={styles.featureCard}>
-          <View style={styles.iconBox}>
-            <Puzzle size={22} color="#D4AF37" />
+          <View style={styles.featureTopRow}>
+            <View style={styles.iconBoxGold}>
+              <Puzzle size={22} color={GOLD[300]} />
+            </View>
+            <View style={[styles.featureBadge, styles.featureBadgeNew]}>
+              <Text style={styles.featureBadgeText}>+15 ELO</Text>
+            </View>
           </View>
           <Text style={styles.cardTitle}>Daily Puzzles</Text>
           <Text style={styles.cardBody}>
@@ -104,14 +146,19 @@ export const HomeView: React.FC<HomeViewProps> = ({ onSelectMode, user }) => {
           </Text>
           <View style={styles.cardFooter}>
             <Text style={styles.cardFooterText}>SOLVE PUZZLE</Text>
-            <ArrowRight size={12} color="#D4AF37" />
+            <ArrowRight size={12} color={GOLD[300]} />
           </View>
         </Pressable>
 
         {/* Pass & Play */}
         <Pressable onPress={() => onSelectMode("pass_and_play")} style={styles.featureCard}>
-          <View style={styles.iconBox}>
-            <Users size={22} color="#D4AF37" />
+          <View style={styles.featureTopRow}>
+            <View style={styles.iconBoxGold}>
+              <Users size={22} color={GOLD[300]} />
+            </View>
+            <View style={styles.featureBadge}>
+              <Text style={styles.featureBadgeText}>LOCAL</Text>
+            </View>
           </View>
           <Text style={styles.cardTitle}>Pass & Play</Text>
           <Text style={styles.cardBody}>
@@ -119,46 +166,58 @@ export const HomeView: React.FC<HomeViewProps> = ({ onSelectMode, user }) => {
           </Text>
           <View style={styles.cardFooter}>
             <Text style={styles.cardFooterText}>START OFFLINE</Text>
-            <ArrowRight size={12} color="#D4AF37" />
+            <ArrowRight size={12} color={GOLD[300]} />
           </View>
         </Pressable>
       </View>
 
-      {/* Secondary Row */}
+      {/* ═══ Secondary Cards ═══ */}
+      <View style={styles.sectionHeader}>
+        <View style={styles.sectionTitleRow}>
+          <Zap size={18} color={GOLD[300]} />
+          <Text style={styles.sectionTitle}>Explore More</Text>
+        </View>
+      </View>
+
       <View style={styles.secondaryGrid}>
         <Pressable onPress={() => onSelectMode("learn")} style={styles.subCard}>
           <View style={styles.subIconBox}>
-            <BookOpen size={20} color="#D4AF37" />
+            <BookOpen size={20} color={GOLD[300]} />
           </View>
           <View style={{ flex: 1 }}>
             <Text style={styles.subTitle}>Interactive Academy</Text>
             <Text style={styles.subBody}>Master rules, principles & endgame traps.</Text>
           </View>
+          <ArrowRight size={14} color="#52525B" />
         </Pressable>
 
         <Pressable onPress={() => onSelectMode("analysis")} style={styles.subCard}>
           <View style={styles.subIconBox}>
-            <BarChart3 size={20} color="#D4AF37" />
+            <BarChart3 size={20} color={GOLD[300]} />
           </View>
           <View style={{ flex: 1 }}>
             <Text style={styles.subTitle}>Analysis Board</Text>
-            <Text style={styles.subBody}>Paste FEN/PGN for infinite depth engine evaluation.</Text>
+            <Text style={styles.subBody}>
+              Paste FEN/PGN for infinite depth engine evaluation.
+            </Text>
           </View>
+          <ArrowRight size={14} color="#52525B" />
         </Pressable>
 
         <Pressable onPress={() => onSelectMode("leaderboard")} style={styles.subCard}>
           <View style={styles.subIconBox}>
-            <Trophy size={20} color="#D4AF37" />
+            <Trophy size={20} color={GOLD[300]} />
           </View>
           <View style={{ flex: 1 }}>
             <Text style={styles.subTitle}>National Circuit</Text>
             <Text style={styles.subBody}>View top Indian Grandmasters & ratings.</Text>
           </View>
+          <ArrowRight size={14} color="#52525B" />
         </Pressable>
 
         <Pressable onPress={() => onSelectMode("tournaments")} style={styles.goldSubCard}>
           <View style={styles.goldSubIconBox}>
-            <Trophy size={20} color="#FDE68A" />
+            <Target size={20} color="#FDE68A" />
           </View>
           <View style={{ flex: 1 }}>
             <Text style={styles.goldSubTitle}>Tournament Arena</Text>
@@ -166,18 +225,7 @@ export const HomeView: React.FC<HomeViewProps> = ({ onSelectMode, user }) => {
               Arena & Swiss cash tournaments with instant pairings.
             </Text>
           </View>
-        </Pressable>
-
-        <Pressable onPress={() => onSelectMode("admin")} style={styles.roseSubCard}>
-          <View style={styles.roseSubIconBox}>
-            <Shield size={20} color="#F87171" />
-          </View>
-          <View style={{ flex: 1 }}>
-            <Text style={styles.roseSubTitle}>Admin Moderation</Text>
-            <Text style={styles.roseSubBody}>
-              Fair play anti-cheat queue & system announcements.
-            </Text>
-          </View>
+          <ArrowRight size={14} color={GOLD[300]} />
         </Pressable>
       </View>
     </ScrollView>
@@ -187,35 +235,46 @@ export const HomeView: React.FC<HomeViewProps> = ({ onSelectMode, user }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#050505",
+    backgroundColor: DARK[800],
   },
   content: {
     padding: 16,
-    paddingBottom: 80,
+    paddingBottom: 100,
     gap: 20,
   },
+  // ═══ Hero ═══
   heroCard: {
-    backgroundColor: "#0A0A0C",
-    borderRadius: 24,
-    borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.1)",
-    padding: 20,
+    ...glassCard,
+    borderRadius: 28,
+    padding: 24,
     gap: 10,
+    overflow: "hidden",
+  position: "relative",
+  ...premiumShadow,
+  },
+  heroGlow: {
+    position: "absolute",
+    top: -40,
+    right: -40,
+    width: 160,
+    height: 160,
+    borderRadius: 80,
+    backgroundColor: "rgba(212, 175, 55, 0.06)",
   },
   circuitBadge: {
     flexDirection: "row",
     alignItems: "center",
     gap: 6,
-    backgroundColor: "rgba(212, 175, 55, 0.1)",
+    backgroundColor: "rgba(212, 175, 55, 0.08)",
     borderWidth: 1,
-    borderColor: "rgba(212, 175, 55, 0.3)",
+    borderColor: "rgba(212, 175, 55, 0.2)",
     paddingHorizontal: 10,
-    paddingVertical: 4,
+    paddingVertical: 5,
     borderRadius: 14,
     alignSelf: "flex-start",
   },
   circuitBadgeText: {
-    color: "#D4AF37",
+    color: GOLD[300],
     fontSize: 9,
     fontWeight: "bold",
     letterSpacing: 1,
@@ -224,9 +283,10 @@ const styles = StyleSheet.create({
     color: "#FFFFFF",
     fontSize: 28,
     fontWeight: "300",
+    letterSpacing: 0.5,
   },
   heroTitleSub: {
-    color: "#D4AF37",
+    color: GOLD[300],
     fontSize: 26,
     fontWeight: "normal",
     fontStyle: "italic",
@@ -240,16 +300,17 @@ const styles = StyleSheet.create({
   ctaRow: {
     flexDirection: "row",
     gap: 10,
-    marginTop: 8,
+    marginTop: 10,
   },
   primaryCta: {
     flexDirection: "row",
     alignItems: "center",
     gap: 8,
-    backgroundColor: "#D4AF37",
+    backgroundColor: GOLD[300],
     paddingHorizontal: 16,
     paddingVertical: 12,
     borderRadius: 24,
+    ...premiumShadow,
   },
   primaryCtaText: {
     color: "#000000",
@@ -261,25 +322,56 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     gap: 8,
-    backgroundColor: "rgba(255,255,255,0.05)",
+    backgroundColor: "rgba(255,255,255,0.04)",
     borderWidth: 1,
-    borderColor: "rgba(212, 175, 55, 0.3)",
+    borderColor: "rgba(212, 175, 55, 0.25)",
     paddingHorizontal: 16,
     paddingVertical: 12,
     borderRadius: 24,
   },
   secondaryCtaText: {
-    color: "#D4AF37",
+    color: GOLD[300],
     fontWeight: "bold",
     fontSize: 11,
     letterSpacing: 1,
   },
+  // ═══ Stats Strip ═══
+  statsStrip: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-around",
+    ...glassCardSubtle,
+    borderRadius: 18,
+    paddingVertical: 14,
+  },
+  statItem: {
+    alignItems: "center",
+    gap: 2,
+  },
+  statValue: {
+    color: GOLD[300],
+    fontSize: 18,
+    fontWeight: "bold",
+  },
+  statLabel: {
+    color: "#71717A",
+    fontSize: 9,
+    fontWeight: "600",
+    letterSpacing: 0.5,
+    textTransform: "uppercase",
+  },
+  statDivider: {
+    width: 1,
+    height: 28,
+    backgroundColor: "rgba(255,255,255,0.06)",
+  },
+  // ═══ Section Header ═══
   sectionHeader: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
     borderBottomWidth: 1,
-    borderBottomColor: "rgba(255,255,255,0.1)",
+    borderBottomColor: "rgba(212, 175, 55, 0.1)",
     paddingBottom: 8,
   },
   sectionTitleRow: {
@@ -293,28 +385,55 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
   sectionMeta: {
-    color: "#D4AF37",
+    color: GOLD[300],
     fontSize: 9,
     fontWeight: "bold",
+    letterSpacing: 1,
   },
+  // ═══ Feature Grid ═══
   grid: {
     gap: 12,
   },
   featureCard: {
-    backgroundColor: "rgba(255,255,255,0.05)",
-    borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.1)",
+    ...glassCard,
     borderRadius: 20,
     padding: 16,
     gap: 8,
   },
-  iconBox: {
-    padding: 10,
-    borderRadius: 14,
-    backgroundColor: "rgba(212, 175, 55, 0.1)",
+  featureTopRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+  },
+  iconBoxGold: {
+    padding: 12,
+    borderRadius: 16,
+    backgroundColor: "rgba(212, 175, 55, 0.08)",
     borderWidth: 1,
-    borderColor: "rgba(212, 175, 55, 0.3)",
+    borderColor: "rgba(212, 175, 55, 0.2)",
     alignSelf: "flex-start",
+  },
+  featureBadge: {
+    backgroundColor: "rgba(212, 175, 55, 0.12)",
+    borderWidth: 1,
+    borderColor: "rgba(212, 175, 55, 0.25)",
+    paddingHorizontal: 8,
+    paddingVertical: 3,
+    borderRadius: 8,
+  },
+  featureBadgeLive: {
+    backgroundColor: "rgba(52, 211, 153, 0.12)",
+    borderColor: "rgba(52, 211, 153, 0.25)",
+  },
+  featureBadgeNew: {
+    backgroundColor: "rgba(168, 85, 247, 0.12)",
+    borderColor: "rgba(168, 85, 247, 0.25)",
+  },
+  featureBadgeText: {
+    color: GOLD[300],
+    fontSize: 8,
+    fontWeight: "bold",
+    letterSpacing: 0.5,
   },
   cardTitle: {
     color: "#FFFFFF",
@@ -332,14 +451,15 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     paddingTop: 10,
     borderTopWidth: 1,
-    borderTopColor: "rgba(255,255,255,0.05)",
+    borderTopColor: "rgba(255,255,255,0.04)",
   },
   cardFooterText: {
-    color: "#D4AF37",
+    color: GOLD[300],
     fontSize: 10,
     fontWeight: "bold",
     letterSpacing: 1,
   },
+  // ═══ Secondary Grid ═══
   secondaryGrid: {
     gap: 10,
   },
@@ -347,16 +467,16 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     gap: 12,
-    backgroundColor: "rgba(255,255,255,0.05)",
-    borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.1)",
+    ...glassCardSubtle,
     borderRadius: 18,
     padding: 14,
   },
   subIconBox: {
     padding: 10,
-    borderRadius: 12,
-    backgroundColor: "rgba(212, 175, 55, 0.1)",
+    borderRadius: 14,
+    backgroundColor: "rgba(212, 175, 55, 0.08)",
+    borderWidth: 1,
+    borderColor: "rgba(212, 175, 55, 0.15)",
   },
   subTitle: {
     color: "#FFFFFF",
@@ -372,16 +492,16 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     gap: 12,
-    backgroundColor: "rgba(212, 175, 55, 0.1)",
+    backgroundColor: "rgba(212, 175, 55, 0.08)",
     borderWidth: 1,
-    borderColor: "rgba(212, 175, 55, 0.3)",
+    borderColor: "rgba(212, 175, 55, 0.2)",
     borderRadius: 18,
     padding: 14,
   },
   goldSubIconBox: {
     padding: 10,
-    borderRadius: 12,
-    backgroundColor: "rgba(212, 175, 55, 0.2)",
+    borderRadius: 14,
+    backgroundColor: "rgba(212, 175, 55, 0.15)",
   },
   goldSubTitle: {
     color: "#FDE68A",
@@ -390,31 +510,6 @@ const styles = StyleSheet.create({
   },
   goldSubBody: {
     color: "#D4D4D8",
-    fontSize: 11,
-    marginTop: 2,
-  },
-  roseSubCard: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 12,
-    backgroundColor: "rgba(159, 18, 57, 0.2)",
-    borderWidth: 1,
-    borderColor: "rgba(244, 63, 94, 0.3)",
-    borderRadius: 18,
-    padding: 14,
-  },
-  roseSubIconBox: {
-    padding: 10,
-    borderRadius: 12,
-    backgroundColor: "rgba(244, 63, 94, 0.2)",
-  },
-  roseSubTitle: {
-    color: "#FDA4AF",
-    fontSize: 14,
-    fontWeight: "bold",
-  },
-  roseSubBody: {
-    color: "#E4E4E7",
     fontSize: 11,
     marginTop: 2,
   },

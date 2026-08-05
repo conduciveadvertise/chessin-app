@@ -1,8 +1,19 @@
 import React from "react";
 import { View, Text, Pressable, ScrollView, StyleSheet, Image } from "react-native";
 import { UserProfile } from "../types/chess";
-import { Award, Trophy, Flame, ChevronLeft, LogOut, KeyRound } from "lucide-react-native";
+import {
+  Award,
+  Trophy,
+  Flame,
+  ChevronLeft,
+  LogOut,
+  KeyRound,
+  Crown,
+  Target,
+  Zap,
+} from "lucide-react-native";
 import { authService, useAuth } from "../services/authService";
+import { glassCard, glassCardSubtle, premiumShadow, GOLD, DARK } from "../lib/theme";
 
 interface ProfileViewProps {
   user: UserProfile;
@@ -10,7 +21,11 @@ interface ProfileViewProps {
   onOpenAuth?: () => void;
 }
 
-export const ProfileView: React.FC<ProfileViewProps> = ({ user, onBackToHome, onOpenAuth }) => {
+export const ProfileView: React.FC<ProfileViewProps> = ({
+  user,
+  onBackToHome,
+  onOpenAuth,
+}) => {
   const { isAuthenticated, isGuest } = useAuth();
   const totalGames = user.winCount + user.lossCount + user.drawCount;
   const winPercent = totalGames > 0 ? Math.round((user.winCount / totalGames) * 100) : 0;
@@ -40,41 +55,96 @@ export const ProfileView: React.FC<ProfileViewProps> = ({ user, onBackToHome, on
         </View>
       </View>
 
-      {/* Main Card */}
+      {/* ═══ Guest Sign-In Prompt ═══ */}
+      {isGuest && (
+        <View style={styles.guestPromptCard}>
+          <View style={styles.guestIconBox}>
+            <Crown size={24} color={GOLD[300]} />
+          </View>
+          <View style={{ flex: 1 }}>
+            <Text style={styles.guestTitle}>Playing as Guest</Text>
+            <Text style={styles.guestBody}>
+              Sign in to save your progress, ratings, and game history across devices.
+            </Text>
+          </View>
+          {onOpenAuth && (
+            <Pressable onPress={onOpenAuth} style={styles.guestSignInBtn}>
+              <Text style={styles.guestSignInBtnText}>Sign In</Text>
+            </Pressable>
+          )}
+        </View>
+      )}
+
+      {/* ═══ Main Profile Card ═══ */}
       <View style={styles.profileCard}>
-        <Image source={{ uri: user.avatar }} style={styles.avatar} />
+        <View style={styles.avatarWrap}>
+          <Image source={{ uri: user.avatar }} style={styles.avatar} />
+          <View style={styles.avatarRing} />
+        </View>
         <View style={styles.profileInfo}>
           <Text style={styles.titleBadge}>{user.title}</Text>
           <Text style={styles.userName}>{user.name}</Text>
-          <Text style={styles.userMeta}>{user.country} • {winPercent}% Win Rate</Text>
+          <Text style={styles.userMeta}>
+            {user.country} • {winPercent}% Win Rate
+          </Text>
         </View>
       </View>
 
-      {/* Ratings */}
+      {/* ═══ Ratings Grid ═══ */}
       <Text style={styles.sectionTitle}>Ratings</Text>
       <View style={styles.ratingsGrid}>
         {[
-          { label: "Rapid", val: user.rating.rapid },
-          { label: "Blitz", val: user.rating.blitz },
-          { label: "Bullet", val: user.rating.bullet },
-          { label: "Puzzle", val: user.rating.puzzle },
-        ].map((item) => (
-          <View key={item.label} style={styles.ratingBox}>
-            <Text style={styles.ratingLabel}>{item.label}</Text>
-            <Text style={styles.ratingVal}>{item.val}</Text>
-          </View>
-        ))}
+          { label: "Rapid", val: user.rating.rapid, icon: Zap },
+          { label: "Blitz", val: user.rating.blitz, icon: Flame },
+          { label: "Bullet", val: user.rating.bullet, icon: Target },
+          { label: "Puzzle", val: user.rating.puzzle, icon: Crown },
+        ].map((item) => {
+          const Icon = item.icon;
+          return (
+            <View key={item.label} style={styles.ratingBox}>
+              <Icon size={14} color={GOLD[300]} />
+              <Text style={styles.ratingLabel}>{item.label}</Text>
+              <Text style={styles.ratingVal}>{item.val}</Text>
+            </View>
+          );
+        })}
       </View>
 
-      {/* Trophies */}
+      {/* ═══ Game Stats ═══ */}
+      <Text style={styles.sectionTitle}>Game Statistics</Text>
+      <View style={styles.statsGrid}>
+        <View style={styles.statBox}>
+          <Text style={styles.statValueWin}>{user.winCount}</Text>
+          <Text style={styles.statLabel}>Wins</Text>
+        </View>
+        <View style={styles.statBox}>
+          <Text style={styles.statValueDraw}>{user.drawCount}</Text>
+          <Text style={styles.statLabel}>Draws</Text>
+        </View>
+        <View style={styles.statBox}>
+          <Text style={styles.statValueLoss}>{user.lossCount}</Text>
+          <Text style={styles.statLabel}>Losses</Text>
+        </View>
+        <View style={styles.statBox}>
+          <Text style={styles.statValueTotal}>{totalGames}</Text>
+          <Text style={styles.statLabel}>Total</Text>
+        </View>
+      </View>
+
+      {/* ═══ Trophies ═══ */}
       <Text style={styles.sectionTitle}>Trophies</Text>
       <View style={styles.trophyCard}>
         <View style={styles.trophyItem}>
-          <Award size={24} color="#D4AF37" />
+          <View style={styles.trophyIconBox}>
+            <Award size={26} color={GOLD[300]} />
+          </View>
           <Text style={styles.trophyTitle}>Grandmaster Master</Text>
         </View>
+        <View style={styles.trophyDivider} />
         <View style={styles.trophyItem}>
-          <Flame size={24} color="#D4AF37" />
+          <View style={styles.trophyIconBox}>
+            <Flame size={26} color={GOLD[300]} />
+          </View>
           <Text style={styles.trophyTitle}>5-Day Warrior</Text>
         </View>
       </View>
@@ -85,11 +155,11 @@ export const ProfileView: React.FC<ProfileViewProps> = ({ user, onBackToHome, on
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#050505",
+    backgroundColor: DARK[800],
   },
   content: {
     padding: 16,
-    paddingBottom: 80,
+    paddingBottom: 100,
     gap: 16,
   },
   topHeader: {
@@ -98,16 +168,16 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     paddingBottom: 10,
     borderBottomWidth: 1,
-    borderBottomColor: "rgba(255,255,255,0.1)",
+    borderBottomColor: "rgba(212, 175, 55, 0.1)",
   },
   exitBtn: {
     flexDirection: "row",
     alignItems: "center",
     gap: 4,
-    backgroundColor: "rgba(255,255,255,0.05)",
+    ...glassCardSubtle,
+    borderRadius: 16,
     paddingHorizontal: 12,
     paddingVertical: 6,
-    borderRadius: 16,
   },
   exitBtnText: {
     color: "#E4E4E7",
@@ -119,7 +189,9 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     gap: 4,
-    backgroundColor: "rgba(159, 18, 57, 0.8)",
+    backgroundColor: "rgba(159, 18, 57, 0.6)",
+    borderWidth: 1,
+    borderColor: "rgba(244, 63, 94, 0.3)",
     paddingHorizontal: 12,
     paddingVertical: 6,
     borderRadius: 16,
@@ -133,97 +205,206 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     gap: 4,
-    backgroundColor: "#D4AF37",
+    backgroundColor: GOLD[300],
     paddingHorizontal: 12,
     paddingVertical: 6,
     borderRadius: 16,
+    ...premiumShadow,
   },
   signInBtnText: {
     color: "#000",
     fontSize: 11,
     fontWeight: "bold",
   },
+  // ═══ Guest Prompt ═══
+  guestPromptCard: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 12,
+    ...glassCard,
+    borderRadius: 18,
+    padding: 14,
+    borderColor: "rgba(212, 175, 55, 0.25)",
+  },
+  guestIconBox: {
+    padding: 12,
+    borderRadius: 16,
+    backgroundColor: "rgba(212, 175, 55, 0.08)",
+    borderWidth: 1,
+    borderColor: "rgba(212, 175, 55, 0.2)",
+  },
+  guestTitle: {
+    color: "#FFFFFF",
+    fontSize: 14,
+    fontWeight: "bold",
+  },
+  guestBody: {
+    color: "#A1A1AA",
+    fontSize: 10,
+    lineHeight: 14,
+    marginTop: 2,
+  },
+  guestSignInBtn: {
+    backgroundColor: GOLD[300],
+    paddingHorizontal: 14,
+    paddingVertical: 8,
+    borderRadius: 12,
+  },
+  guestSignInBtnText: {
+    color: "#000",
+    fontSize: 11,
+    fontWeight: "bold",
+  },
+  // ═══ Profile Card ═══
   profileCard: {
     flexDirection: "row",
     alignItems: "center",
     gap: 16,
-    backgroundColor: "#0A0A0C",
-    borderRadius: 20,
-    borderWidth: 1,
-    borderColor: "rgba(212, 175, 55, 0.3)",
-    padding: 16,
+    ...glassCard,
+    borderRadius: 22,
+    padding: 18,
+    ...premiumShadow,
+  },
+  avatarWrap: {
+    position: "relative",
   },
   avatar: {
-    width: 64,
-    height: 64,
-    borderRadius: 32,
+    width: 68,
+    height: 68,
+    borderRadius: 34,
     borderWidth: 2,
-    borderColor: "#D4AF37",
+    borderColor: GOLD[300],
+  },
+  avatarRing: {
+    position: "absolute",
+    top: -3,
+    left: -3,
+    width: 74,
+    height: 74,
+    borderRadius: 37,
+    borderWidth: 1,
+    borderColor: "rgba(212, 175, 55, 0.3)",
   },
   profileInfo: {
     flex: 1,
-    gap: 2,
+    gap: 3,
   },
   titleBadge: {
-    color: "#D4AF37",
+    color: GOLD[300],
     fontSize: 10,
     fontWeight: "bold",
+    letterSpacing: 1,
   },
   userName: {
     color: "#FFF",
-    fontSize: 18,
+    fontSize: 20,
     fontWeight: "bold",
   },
   userMeta: {
     color: "#A1A1AA",
     fontSize: 11,
   },
+  // ═══ Section Title ═══
   sectionTitle: {
-    color: "#D4AF37",
+    color: GOLD[300],
     fontSize: 16,
     fontWeight: "bold",
+    letterSpacing: 0.5,
   },
+  // ═══ Ratings Grid ═══
   ratingsGrid: {
     flexDirection: "row",
     gap: 8,
   },
   ratingBox: {
     flex: 1,
-    backgroundColor: "#0A0A0C",
-    borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.1)",
-    borderRadius: 12,
+    ...glassCardSubtle,
+    borderRadius: 14,
     padding: 12,
     alignItems: "center",
+    gap: 4,
   },
   ratingLabel: {
-    color: "#A1A1AA",
-    fontSize: 10,
+    color: "#71717A",
+    fontSize: 9,
+    fontWeight: "600",
+    letterSpacing: 0.5,
+    textTransform: "uppercase",
   },
   ratingVal: {
-    color: "#D4AF37",
-    fontSize: 16,
+    color: GOLD[300],
+    fontSize: 18,
     fontWeight: "bold",
-    marginTop: 2,
   },
+  // ═══ Game Stats ═══
+  statsGrid: {
+    flexDirection: "row",
+    gap: 8,
+  },
+  statBox: {
+    flex: 1,
+    ...glassCardSubtle,
+    borderRadius: 14,
+    padding: 12,
+    alignItems: "center",
+    gap: 4,
+  },
+  statValueWin: {
+    color: "#34D399",
+    fontSize: 20,
+    fontWeight: "bold",
+  },
+  statValueDraw: {
+    color: "#A1A1AA",
+    fontSize: 20,
+    fontWeight: "bold",
+  },
+  statValueLoss: {
+    color: "#F87171",
+    fontSize: 20,
+    fontWeight: "bold",
+  },
+  statValueTotal: {
+    color: GOLD[300],
+    fontSize: 20,
+    fontWeight: "bold",
+  },
+  statLabel: {
+    color: "#71717A",
+    fontSize: 9,
+    fontWeight: "600",
+    letterSpacing: 0.5,
+    textTransform: "uppercase",
+  },
+  // ═══ Trophies ═══
   trophyCard: {
     flexDirection: "row",
-    gap: 12,
-    backgroundColor: "#0A0A0C",
-    borderRadius: 16,
-    padding: 16,
-    borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.1)",
+    alignItems: "center",
+    ...glassCard,
+    borderRadius: 18,
+    padding: 18,
   },
   trophyItem: {
     flex: 1,
     alignItems: "center",
-    gap: 4,
+    gap: 8,
+  },
+  trophyIconBox: {
+    padding: 12,
+    borderRadius: 18,
+    backgroundColor: "rgba(212, 175, 55, 0.08)",
+    borderWidth: 1,
+    borderColor: "rgba(212, 175, 55, 0.2)",
   },
   trophyTitle: {
     color: "#FFF",
     fontSize: 10,
     textAlign: "center",
     fontWeight: "bold",
+  },
+  trophyDivider: {
+    width: 1,
+    height: 50,
+    backgroundColor: "rgba(255,255,255,0.06)",
   },
 });
